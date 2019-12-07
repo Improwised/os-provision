@@ -13,6 +13,11 @@ This repo is a template to provision Manjaro-based linux distribution to look an
 ## Installation
 
 ```
+wget https://raw.githubusercontent.com/Improwised/os-provision/master/install.sh -O - | zsh
+```
+or
+
+```
 git clone https://github.com/improwised/os-provision.git
 cd os-provision
 ./install.sh
