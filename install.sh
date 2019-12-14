@@ -16,7 +16,7 @@ chsh -s $(which zsh)
 # Install official packages
 # latte-dock
 sudo pacman -S --noconfirm openssh tk nethogs docker vim synapse samba \
-  alacritty dbeaver baobab simple-scan yay firefox htop peek vlc feh patch make fakeroot
+  alacritty dbeaver baobab simple-scan yay firefox htop peek vlc feh patch make fakeroot m4
 
 
 # Install community packages
