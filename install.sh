@@ -22,7 +22,7 @@ sudo pacman -S --noconfirm openssh tk nethogs docker vim synapse samba \
 # Install community packages
 yay --nocleanmenu --nodiffmenu --noeditmenu --noupgrademenu --save --sudoloop --stats --nocombinedupgrade --batchinstall \
   brother-mfc-7860dw brscan4 concourse-fly-bin fluxctl-bin gitflow-avh google-chrome kubectl-bin peazip-qt kde-servicemenus-peazip \
-  rslsync slack-desktop sublime-text-dev fasd
+  rslsync slack-desktop sublime-text-dev fasd ttf-ms-fonts
 
 # Install custom softwares
 
@@ -33,6 +33,15 @@ sudo gpasswd -a ${USER} docker
 sudo systemctl enable docker
 sudo systemctl start docker
 newgrp docker
+
+# Post-install Optimizations
+# Reduce GRUB timeout
+sudo sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/' /etc/default/grub
+sudo update-grub
+# Reduce swappiness to 10 performance improvement in systems with large RAM
+sudo tee -a /etc/sysctl.d/100-manjaro-custom.conf > /dev/null << EOF
+vm.swappiness=10
+EOF
 
 # Gnome settings
 gsettings set org.gnome.desktop.interface clock-show-date true
