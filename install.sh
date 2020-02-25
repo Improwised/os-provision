@@ -47,3 +47,9 @@ EOF
 gsettings set org.gnome.desktop.interface clock-show-date true
 gsettings set org.gnome.shell enabled-extensions 'elementary'
 gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+
+# Printer
+yay -S brother-mfc-7860dw brscan4
+sudo systemctl start org.cups.cupsd
+sudo lpadmin -p MFC7860DW -E -v socket://192.168.1.10 -P /usr/share/cups/model/MFC7860DW.ppd
+brsaneconfig4 -a name=Brother_MFC7860DW model=MFC-7860DW ip=192.168.1.10
