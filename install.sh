@@ -4,19 +4,19 @@ sudo pacman-key --init && sudo pacman-key --populate archlinux manjaro && sudo p
 
 # Remove packages
 
-# Upgrade all
-sudo pacman -Syyu
-
 # Install zsh & oh-my-zsh
 sudo pacman -S --noconfirm git zsh
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
 chsh -s $(which zsh)
 # Do logout & login
 
+# Upgrade all
+sudo pacman -Syyu
+
 # Install official packages
 # latte-dock
-sudo pacman -S --noconfirm openssh tk nethogs docker vim synapse samba \
-  alacritty dbeaver baobab simple-scan yay firefox htop peek vlc feh patch make fakeroot m4
+sudo pacman -S --noconfirm base-devel openssh tk nethogs docker vim synapse samba \
+  alacritty dbeaver baobab simple-scan yay firefox htop peek vlc feh patch make fakeroot m4 nuspell
 
 
 # Install community packages
