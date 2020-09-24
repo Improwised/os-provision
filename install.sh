@@ -1,6 +1,6 @@
 # Prepare pacman
-sudo mkdir -p /root/.gnupg
-sudo pacman-key --init && sudo pacman-key --populate archlinux manjaro && sudo pacman-key --refresh-keys
+# sudo mkdir -p /root/.gnupg
+# sudo pacman-key --init && sudo pacman-key --populate archlinux manjaro && sudo pacman-key --refresh-keys
 
 # Remove packages
 
@@ -16,11 +16,12 @@ sudo pacman -Syyu
 # Install official packages
 # latte-dock
 sudo pacman -S --noconfirm base-devel openssh tk nethogs docker vim synapse samba \
-  alacritty dbeaver baobab simple-scan yay firefox htop peek vlc feh patch make fakeroot m4 nuspell xclip
+  alacritty dbeaver baobab simple-scan yay firefox htop peek flameshot vlc feh \
+  patch make fakeroot m4 nuspell xclip
 
 
 # Install community packages
-yay --nocleanmenu --nodiffmenu --noeditmenu --noupgrademenu --save --sudoloop --stats --nocombinedupgrade --batchinstall \
+yay -S --nocleanmenu --nodiffmenu --noeditmenu --noupgrademenu --save --sudoloop --nocombinedupgrade --batchinstall \
   brother-mfc-7860dw brscan4 concourse-fly-bin fluxctl-bin gitflow-avh google-chrome kubectl-bin peazip-qt kde-servicemenus-peazip \
   rslsync slack-desktop sublime-text-dev fasd ttf-ms-fonts
 
@@ -44,12 +45,11 @@ vm.swappiness=10
 EOF
 
 # Gnome settings
-gsettings set org.gnome.desktop.interface clock-show-date true
-gsettings set org.gnome.shell enabled-extensions 'elementary'
-gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+# gsettings set org.gnome.desktop.interface clock-show-date true
+# gsettings set org.gnome.shell enabled-extensions 'elementary'
+# gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 
 # Printer
-yay -S brother-mfc-7860dw brscan4
 sudo systemctl start org.cups.cupsd
 sudo lpadmin -p MFC7860DW -E -v socket://192.168.1.10 -P /usr/share/cups/model/MFC7860DW.ppd
 sudo brsaneconfig4 -a name=Brother_MFC7860DW model=MFC-7860DW ip=192.168.1.10

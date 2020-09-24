@@ -1,12 +1,22 @@
 # OS Provisioning Scripts for Computers
 
-This repo is a template to provision Manjaro-based linux distribution to look and work as we want it to, with all the bundled software installed.
+This repo is a template to provision [Gnome Edition of Manjaro](https://manjaro.org/downloads/official/gnome/) linux distribution to look and work as we want it to, with all the necessary software installed.
+
+## Manjaro
+
+### Installation
+
+The [First Steps](https://manjaro.org/support/firststeps/) guide is a good resource to install Manjaro. We recommend that you create a separate partition for `/home` to keep your work data separate from the OS volume.
+
+### Tips
+
+* Enable and use AUR (`yay` should enable AUR first time it runs) to install third-party software you need. It has wide range of packages available for almost everything you're going to need.
+*
 
 ## Features
 
 * AUR and yay
 * Desktop applications
-* Mac-ish theme for convenient migration
 * Alacritty + Oh-my-zsh
 * Other dotfiles and misc stuff
 
