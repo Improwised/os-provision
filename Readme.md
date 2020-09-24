@@ -11,7 +11,17 @@ The [First Steps](https://manjaro.org/support/firststeps/) guide is a good resou
 ### Tips
 
 * Enable and use AUR (`yay` should enable AUR first time it runs) to install third-party software you need. It has wide range of packages available for almost everything you're going to need.
-*
+* Recommended Software - all of them should be installed once the script is run:
+  * Editor: Sublime Text
+  * Browser: Firefox and Google Chrome
+  * Communication: Slack
+  * Terminal: Gnome Terminal (built-in). Alternatively, Alacritty and Kitty are good.
+  * Database UI: DBeaver
+  * Docker
+  * `git` and `git flow`
+  * Screen Recording: Peek
+  * Screenshots: Flameshot
+
 
 ## Features
 
