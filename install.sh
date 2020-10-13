@@ -15,7 +15,7 @@ sudo pacman -Syyu
 
 # Install official packages
 # latte-dock
-sudo pacman -S --noconfirm base-devel openssh tk nethogs docker vim synapse samba \
+sudo pacman -S --noconfirm base-devel openssh tk nethogs docker docker-compose vim synapse samba \
   alacritty dbeaver baobab simple-scan yay firefox htop peek flameshot vlc feh \
   patch make fakeroot m4 nuspell xclip
 
