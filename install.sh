@@ -43,6 +43,8 @@ sudo update-grub
 sudo tee -a /etc/sysctl.d/100-manjaro-custom.conf > /dev/null << EOF
 vm.swappiness=10
 EOF
+# Switch to Xorg by default
+sudo sed -i 's/WaylandEnable=true/WaylandEnable=false/' /etc/gdm/custom.conf
 
 # Gnome settings
 # gsettings set org.gnome.desktop.interface clock-show-date true
