@@ -53,5 +53,5 @@ sudo sed -i 's/WaylandEnable=true/WaylandEnable=false/' /etc/gdm/custom.conf
 
 # Printer
 sudo systemctl start org.cups.cupsd
-sudo lpadmin -p MFC7860DW -E -v socket://192.168.1.10 -P /usr/share/cups/model/MFC7860DW.ppd
-sudo brsaneconfig4 -a name=Brother_MFC7860DW model=MFC-7860DW ip=192.168.1.10
+sudo lpadmin -p MFC7860DW -E -v socket://10.0.1.10 -P /usr/share/cups/model/MFC7860DW.ppd
+sudo brsaneconfig4 -a name=Brother_MFC7860DW model=MFC-7860DW ip=10.0.1.10
