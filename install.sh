@@ -52,6 +52,7 @@ sudo sed -i 's/WaylandEnable=true/WaylandEnable=false/' /etc/gdm/custom.conf
 # gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 
 # Printer
+#Cups systemd socket and service files have been
 #sudo systemctl start org.cups.cupsd
 sudo systemctl enable cups.service
 sudo systemctl start cups.service
