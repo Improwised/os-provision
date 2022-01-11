@@ -3,13 +3,12 @@ on:
   push:
     paths:
       - "playbook.yaml"
-      - "Vagrantfile"
+      - "ansible/roles/**"
       - ".github/workflows/vagrant.yaml"
 jobs:
   vagrant-up:
     runs-on: macos-10.15
     steps:
-
       - uses: actions/checkout@v2
 
       - name: Cache pip
@@ -17,15 +16,16 @@ jobs:
         with:
           path: ~/Library/Caches/pip
           key: ${{ runner.os }}-pip3-
+          restore-keys: ${{ runner.os }}-pip3-
 
-      - run: pip3 install ansible molecule molecule-vagrant
+      - run: pip3 install ansible molecule molecule-vagrant ansible-lint
 
       - name: Show versions
         run: |
           vagrant --version
           ansible --version
 
-      - name: Run vagrant up
+      - name: Run test molecule
         shell: bash
         working-directory: ansible/roles/
         run: |
