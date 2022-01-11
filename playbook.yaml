@@ -1,0 +1,135 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: ParallelDownloads to 3
+      ansible.builtin.lineinfile:
+        backup: yes
+        state: present
+        path: "/etc/pacman.conf"
+        regex: "^ParallelDownloads"
+        line: "ParallelDownloads = 3"
+
+    - name: pacman -Syu
+      community.general.pacman:
+        update_cache: yes
+        upgrade: yes
+        extra_args: --noconfirm
+
+    - name: Install official packages
+      community.general.pacman:
+        state: present
+        extra_args: --noconfirm
+        name:
+          [
+            alacritty,
+            baobab,
+            base-devel,
+            dbeaver,
+            docker,
+            docker-compose,
+            fakeroot,
+            fasd,
+            feh,
+            firefox,
+            flameshot,
+            git,
+            gitui,
+            htop,
+            m4,
+            make,
+            nethogs,
+            nuspell,
+            openssh,
+            patch,
+            peek,
+            samba,
+            simple-scan,
+            synapse,
+            tk,
+            vim,
+            vlc,
+            xclip,
+            yay,
+            zsh,
+          ]
+
+    - name: Install community packages
+      community.general.pacman:
+        executable: yay
+        state: present
+        extra_args: --noconfirm
+        name:
+          [
+            brother-mfc-7860dw,
+            brscan4,
+            concourse-fly-bin,
+            fasd,
+            fluxctl-bin,
+            gitflow-avh,
+            google-chrome,
+            kde-servicemenus-peazip,
+            kubectl-bin,
+            peazip-qt-bin,
+            rslsync,
+            slack-desktop,
+            sublime-text-4,
+            ttf-ms-fonts,
+          ]
+
+    - name: Enable docker without sudo
+      ansible.builtin.group:
+        name: docker
+        state: present
+
+    - name: Adding current user to group docker
+      user:
+        name: "{{ ansible_user_id }}"
+        groups: docker
+        append: yes
+
+    - name: Make sure a service unit is running
+      ansible.builtin.systemd:
+        enabled: yes
+        state: started
+        name: docker
+
+    - name: Reset ssh connection to allow user changes to affect ansible user
+      ansible.builtin.meta: reset_connection
+
+    - name: Reduce GRUB timeout
+      ansible.builtin.lineinfile:
+        backup: yes
+        state: present
+        path: /etc/default/grub
+        regexp: "^GRUB_TIMEOUT="
+        line: "GRUB_TIMEOUT=0"
+      register: grub_change
+
+    - name: Update grub
+      ansible.builtin.command: update-grub
+      when: grub_change is true
+
+    - name: Reduce swappiness
+      ansible.builtin.copy:
+        content: "vm.swappiness=10"
+        dest: /etc/sysctl.d/100-manjaro-custom.conf
+
+    - name: Reduce GRUB timeout
+      ansible.builtin.lineinfile:
+        backup: yes
+        state: present
+        path: /etc/gdm/custom.conf
+        regexp: "^WaylandEnable=true"
+        line: "WaylandEnable=false"
+      when: enable_wayland is yes
+
+    - name: Printer
+      ansible.builtin.systemd:
+        enabled: yes
+        state: started
+        name: org.cups.cupsd
+
+    - name: Set login shell of user {{ ansible_env.USER }} to `/bin/zsh` with `usermod`
+      ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_env.USER }}
+      become: false
+      changed_when: false

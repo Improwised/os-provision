@@ -42,3 +42,9 @@ git clone https://github.com/improwised/os-provision.git
 cd os-provision
 ./install.sh
 ```
+
+### Ansible test through vagrant
+
+```bash
+vagrant up
+```
