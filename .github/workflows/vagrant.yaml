@@ -12,12 +12,16 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-pip3-
+
       - name: Cache Vagrant boxes
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.vagrant.d/boxes
-            ~/Library/Caches/pip
+          path: ~/.vagrant.d/boxes
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
           restore-keys: |
             ${{ runner.os }}-vagrant-
