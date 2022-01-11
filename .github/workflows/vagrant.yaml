@@ -15,10 +15,14 @@ jobs:
       - name: Cache Vagrant boxes
         uses: actions/cache@v2
         with:
-          path: ~/.vagrant.d/boxes
+          path: |
+            ~/.vagrant.d/boxes
+            ~/Library/Caches/pip
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
           restore-keys: |
             ${{ runner.os }}-vagrant-
+
+      - run: pip install ansible
 
       - name: Show Vagrant version
         run: vagrant --version
