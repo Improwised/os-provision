@@ -23,7 +23,7 @@ sudo pacman -S --noconfirm base-devel openssh tk nethogs docker docker-compose \
 # Install community packages
 yay -S \
   brother-mfc-7860dw brscan4 concourse-fly-bin fluxctl-bin gitflow-avh google-chrome kubectl-bin peazip-qt-bin kde-servicemenus-peazip \
-  rslsync slack-desktop sublime-text-dev ttf-ms-fonts
+  rslsync slack-desktop sublime-text-4 ttf-ms-fonts
 
 # Install custom softwares
 
