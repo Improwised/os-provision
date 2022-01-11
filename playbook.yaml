@@ -6,6 +6,7 @@
         backup: yes
         state: present
         path: "/etc/pacman.conf"
+        insertafter: '^\[options\]$'
         regex: "^ParallelDownloads"
         line: "ParallelDownloads = 3"
 

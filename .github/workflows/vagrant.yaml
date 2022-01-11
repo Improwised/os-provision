@@ -22,13 +22,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vagrant-
 
-      - run: pip install ansible
+      - run: pip3 install ansible
 
-      - name: Show Vagrant version
-        run: vagrant --version
+      - name: Show versions
+        run: |
+          vagrant --version
+          ansible --version
 
       - name: Run vagrant up
         run: vagrant up
-
-      # - name: ssh into box after boot
-      #   run: vagrant ssh -c "echo 'hello world!'"
