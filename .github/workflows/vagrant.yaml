@@ -4,6 +4,7 @@ on:
     paths:
       - "playbook.yaml"
       - "Vagrantfile"
+      - ".github/workflows/vagrant.yaml"
 jobs:
   vagrant-up:
     runs-on: macos-10.15
