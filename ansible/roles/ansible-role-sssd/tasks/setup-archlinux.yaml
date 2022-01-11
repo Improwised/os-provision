@@ -1,0 +1,59 @@
+---
+- name: Ensure sssd packages are installed.
+  community.general.pacman:
+    name: "{{ sssd_packages }}"
+    update_cache: yes
+    state: present
+
+# configure pam modules
+- name: Configure pam modules
+  become: true
+  become_user: root
+  notify: restart sssd
+  block:
+    - name: Setup pam 1
+      ansible.builtin.lineinfile:
+        backup: yes
+        state: present
+        firstmatch: true
+        path: "{{ item.path }}"
+        insertbefore: "{{ item.insertbefore }}"
+        line: "{{ item.line }}"
+      with_items:
+        - path: /etc/pam.d/sudo
+          insertbefore: "^auth.*"
+          line: "auth  sufficient  pam_sss.so  forward_pass"
+        - path: /etc/pam.d/su
+          insertbefore: "^auth +required +pam_unix.so"
+          line: "auth  sufficient  pam_sss.so  forward_pass"
+        - path: /etc/pam.d/su
+          insertbefore: "^account +required +pam_unix.so.*"
+          line: "account  [default=bad success=ok user_unknown=ignore authinfo_unavail=ignore]  pam_sss.so"
+        - path: /etc/pam.d/system-auth
+          insertbefore: "^auth +required +pam_faillock.so+.*"
+          line: "auth  sufficient  pam_sss.so  forward_pass"
+        - path: /etc/pam.d/system-auth
+          insertbefore: "^-account"
+          line: "account  [default=bad success=ok user_unknown=ignore authinfo_unavail=ignore]  pam_sss.so"
+        - path: /etc/pam.d/system-auth
+          insertbefore: "^[-]password"
+          line: "password  sufficient  pam_sss.so  use_authtok"
+        - path: /etc/pam.d/system-auth
+          insertbefore: "^session"
+          line: "session  required  pam_mkhomedir.so  skel=/etc/skel/ umask=0077"
+
+    - name: Setup pam 2
+      ansible.builtin.lineinfile:
+        backup: yes
+        firstmatch: true
+        state: present
+        path: "{{ item.path }}"
+        insertafter: "{{ item.insertafter }}"
+        line: "{{ item.line }}"
+      with_items:
+        - path: /etc/pam.d/su
+          insertafter: '^session.*pam_unix.so'
+          line: "session  optional  pam_sss.so"
+        - path: /etc/pam.d/system-auth
+          insertafter: '^session.*pam_unix.so'
+          line: "session  optional  pam_sss.so"

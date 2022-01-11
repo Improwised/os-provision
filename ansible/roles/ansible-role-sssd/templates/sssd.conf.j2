@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+{% for domain in sssd_config.keys() -%}
+
+[{{ domain }}]
+{% for key in sssd_config[domain].keys() %}
+{{ key }} = {{ sssd_config[domain][key] }}
+{% endfor %}
+{% endfor %}

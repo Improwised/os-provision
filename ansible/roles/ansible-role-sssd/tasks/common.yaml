@@ -1,0 +1,59 @@
+---
+- name: Add group to sudoers
+  ansible.builtin.lineinfile:
+    backup: yes
+    path: /etc/sudoers
+    state: present
+    line: "%{{ sudoers_allowed_groups }} ALL=(ALL) NOPASSWD: ALL"
+    # mode: 0600
+    validate: 'visudo -cf %s'
+
+- name: Creating ldap.conf if not exist
+  ansible.builtin.file:
+    path: "{{ ldap_file }}"
+    state: touch
+    mode: u+rw,g-rwx,o-rwx
+    modification_time: preserve
+    access_time: preserve
+
+- name: configure LDAP
+  ansible.builtin.lineinfile:
+    backup: yes
+    state: present
+    path: "{{ ldap_file }}"
+    regexp: "^TLS_REQCERT"
+    line: "TLS_REQCERT allow"
+
+- name: Set sssd config
+  ansible.builtin.template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    mode: 0600
+    group: root
+    owner: root
+  notify: restart sssd
+
+- name: Configure sshd
+  notify: restart sshd
+  when: sshd_sss_config_enable == 'yes'
+  block:
+    - name: Update SSHD config
+      lineinfile:
+        backup: yes
+        dest: "/etc/ssh/sshd_config"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+        validate: 'sshd -T -f %s'
+        mode: 0644
+      with_items:
+        - regexp: "^#AuthorizedKeysCommandUser"
+          line: "AuthorizedKeysCommandUser root"
+        - regexp: "^#AuthorizedKeysCommand"
+          line: "AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys"
+        - regexp: "^#PasswordAuthentication"
+          line: "PasswordAuthentication no"
+        - regexp: "^#PubkeyAuthentication"
+          line: "PubkeyAuthentication yes"
+        - regexp: "^#AuthorizedKeysFile"
+          line: "AuthorizedKeysFile	.ssh/authorized_keys"

@@ -1,0 +1,25 @@
+---
+- name: Ensure sssd packages are installed.
+  ansible.builtin.apt:
+    name: "{{ sssd_packages }}"
+    update_cache: yes
+    state: present
+
+# configure pam modules
+- name: Configure pam modules
+  become: true
+  become_user: root
+  notify: restart sssd
+  block:
+    - name: Setup pam
+      ansible.builtin.lineinfile:
+        backup: yes
+        firstmatch: true
+        state: present
+        path: "{{ item.path }}"
+        insertafter: "{{ item.insertafter }}"
+        line: "{{ item.line }}"
+      with_items:
+        - path: /etc/pam.d/common-session
+          insertafter: '^session +optional +pam_sss.so'
+          line: "session  required  pam_mkhomedir.so skel=/etc/skel/ umask=0022"

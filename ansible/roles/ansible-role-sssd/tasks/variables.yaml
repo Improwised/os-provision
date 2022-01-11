@@ -1,0 +1,9 @@
+---
+# Variable configuration.
+- name: Include OS-specific variables (Arch).
+  include_vars: "{{ ansible_distribution|lower }}.yaml"
+  when: ansible_distribution == 'Archlinux'
+
+- name: Include OS-specific variables (Debian).
+  include_vars: "{{ ansible_distribution|lower }}-{{ ansible_distribution_version.split('.')[0] }}.yaml"
+  when: ansible_os_family == 'Debian'

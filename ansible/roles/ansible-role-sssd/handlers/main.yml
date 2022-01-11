@@ -1,0 +1,15 @@
+---
+# handlers file for ansible-role-sssd
+- name: restart sssd
+  ansible.builtin.service:
+    name: "sssd"
+    enabled: yes
+    state: "{{ sssd_restarted_state }}"
+    sleep: 5
+
+- name: restart sshd
+  ansible.builtin.service:
+    name: "sshd"
+    enabled: yes
+    state: "{{ sshd_restarted_state }}"
+    sleep: 5

@@ -1,0 +1,13 @@
+---
+# vars file for sssd
+sssd_packages:
+  - sssd
+  - openssl
+  - sssd-ad
+  - sssd-ldap
+  - sssd-tools
+  - ldap-utils
+  - libnss-sss
+  - libpam-sss
+  - ca-certificates
+ldap_file: /etc/ldap/ldap.conf

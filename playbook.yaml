@@ -134,3 +134,7 @@
       ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_env.USER }}
       become: false
       changed_when: false
+
+    - name: Run SSSD role
+      include_role:
+        name: ansible-role-sssd

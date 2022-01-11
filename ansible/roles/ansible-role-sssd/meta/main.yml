@@ -1,0 +1,18 @@
+galaxy_info:
+  role_name: sssd
+  author: pratikbalar
+  description: sssd config in arch and debian(not-stable)
+  company: improwised technologies
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.10
+  platforms:
+    - name: ArchLinux
+    - name: Ubunt
+      versions:
+        - focal
+  galaxy_tags:
+    - sssd
+    - pam
+    - ldap
+    - sshd
+dependencies: []

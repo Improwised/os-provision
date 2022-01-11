@@ -18,15 +18,7 @@ jobs:
           path: ~/Library/Caches/pip
           key: ${{ runner.os }}-pip3-
 
-      - name: Cache Vagrant boxes
-        uses: actions/cache@v2
-        with:
-          path: ~/.vagrant.d/boxes
-          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-
-
-      - run: pip3 install ansible
+      - run: pip3 install ansible molecule molecule-vagrant
 
       - name: Show versions
         run: |
@@ -34,4 +26,14 @@ jobs:
           ansible --version
 
       - name: Run vagrant up
-        run: vagrant up
+        shell: bash
+        working-directory: ansible/roles/
+        run: |
+          set -x
+          for role in */ ; do
+              if [ -d "$role" ]; then
+                  cd $role
+                  molecule test --all --parallel
+                  cd ..
+              fi
+          done

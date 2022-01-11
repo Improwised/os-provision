@@ -1,0 +1,39 @@
+---
+## SSSD and SSHD restart state
+sssd_restarted_state: "restarted"
+sshd_restarted_state: "restarted"
+
+## groups that allowed as sudoers
+sudoers_allowed_groups: 1001
+
+## SSSD config
+sssd_config:
+  sssd:
+    config_file_version: 2
+    services: nss, pam, sudo, ssh
+    domains: IMPROWISED
+    shell_fallback: /bin/bash
+
+  domain/IMPROWISED:
+    cache_credentials: true
+    debug_level: 5
+    enumerate: false
+    id_provider: ldap
+    auth_provider: ldap
+    access_provider: ldap
+    ldap_uri: ldaps://directory.improwised.com
+    ldap_search_base: dc=glauth,dc=com
+    ldap_default_bind_dn: uid=serviceuser,cn=svcaccts,dc=glauth,dc=com
+    ldap_group_search_base: cn=groups,dc=glauth,dc=com
+    ldap_default_authtok_type: password
+    ldap_default_authtok: HF4tinWjn4Yh9DiJ
+    sudo_provider: none
+    entry_cache_timeout: 86400
+    ldap_schema: rfc2307
+    ldap_tls_reqcert: allow
+    ldap_access_order: filter
+    ldap_access_filter: memberOf=cn=member,cn=groups,dc=glauth,dc=com
+    ldap_referrals: false
+
+# Configure SSHD for SSSD, default `no`
+sshd_sss_config_enable: no
