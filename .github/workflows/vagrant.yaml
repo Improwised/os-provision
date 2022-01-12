@@ -20,10 +20,11 @@ jobs:
 
       - run: pip3 install ansible molecule molecule-vagrant ansible-lint
 
-      - name: Show versions
+      - name: Configure vagrant
         run: |
           vagrant --version
           ansible --version
+          vagrant ssh-config > vagrant-ssh; ssh -F vagrant-ssh default
 
       - name: Run test molecule
         shell: bash
@@ -33,7 +34,7 @@ jobs:
           for role in */ ; do
               if [ -d "$role" ]; then
                   cd $role
-                  molecule test --all --parallel
+                  molecule test --all
                   cd ..
               fi
           done
