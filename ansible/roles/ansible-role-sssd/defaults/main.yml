@@ -32,7 +32,7 @@ sssd_config:
     ldap_schema: rfc2307
     ldap_tls_reqcert: allow
     ldap_access_order: filter
-    ldap_access_filter: memberOf=cn=member,cn=groups,dc=glauth,dc=com
+    ldap_access_filter: memberOf=cn=employee,cn=groups,dc=glauth,dc=com
     ldap_referrals: false
 
 # Configure SSHD for SSSD, default `no`

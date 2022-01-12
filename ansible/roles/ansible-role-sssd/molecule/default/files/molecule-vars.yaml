@@ -1,16 +1,16 @@
 ---
-# defaults file for ansible-role-sssd
+## SSSD and SSHD restart state
 sssd_restarted_state: "restarted"
 sshd_restarted_state: "restarted"
-# defaults file for sssd
 
-sudoers_allowed_groups: 5050
+sudoers_allowed_groups: 1001
 
 sssd_config:
   sssd:
     config_file_version: 2
     services: nss, pam, sudo, ssh
     domains: IMPROWISED
+    shell_fallback: /bin/bash
 
   domain/IMPROWISED:
     cache_credentials: false
@@ -30,9 +30,8 @@ sssd_config:
     ldap_schema: rfc2307
     ldap_tls_reqcert: allow
     ldap_access_order: filter
-    ldap_access_filter: memberOf=cn=test,cn=groups,dc=glauth,dc=com
+    ldap_access_filter: memberOf=cn=employee,cn=groups,dc=glauth,dc=com
     ldap_referrals: false
 
-
-# Configuration sshd for sssd is no by default
+# Configure SSHD for SSSD, default `no`
 sshd_sss_config_enable: yes

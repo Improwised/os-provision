@@ -3,8 +3,8 @@
   hosts: all
   gather_facts: false
   become: yes
-  vars:
-    ansible_test_user: ansible-test
+  vars_files:
+  - files/molecule-vars.yaml
   tasks:
     - name: Verify sssd is running
       ansible.builtin.service:
@@ -13,7 +13,7 @@
         sleep: 5
 
     - name: Verify sshd is running
-      when: sshd_sss_config_enable == 'yes'
+      when: sshd_sss_config_enable == yes
       ansible.builtin.service:
         name: "sshd"
         state: started
