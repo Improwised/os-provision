@@ -12,11 +12,14 @@
         state: started
         sleep: 5
 
-    - name: Verify sshd is running
-      ansible.builtin.service:
-        name: "sshd"
-        state: started
-        sleep: 5
+    # - name: Verify sshd is running
+    #   when: sshd_sss_config_enable == 'yes'
+    #   block:
+    #     - name: Verify sshd is running
+    #       ansible.builtin.service:
+    #         name: "sshd"
+    #         state: started
+    #         sleep: 5
 
     - name: Verify sss ssh working
       ansible.builtin.command: /usr/bin/sss_ssh_authorizedkeys pratikbalar

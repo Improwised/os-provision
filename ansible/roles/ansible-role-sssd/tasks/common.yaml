@@ -33,25 +33,27 @@
     owner: root
   notify: restart sssd
 
-- name: Update SSHD config
-  when: sshd_sss_config_enable == yes
+- name: Configure sshd
   notify: restart sshd
-  lineinfile:
-    backup: yes
-    dest: "/etc/ssh/sshd_config"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
-    validate: 'sshd -T -f %s'
-    mode: 0644
-  with_items:
-    - regexp: "^#AuthorizedKeysCommandUser"
-      line: "AuthorizedKeysCommandUser root"
-    - regexp: "^#AuthorizedKeysCommand"
-      line: "AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys"
-    - regexp: "^#PasswordAuthentication"
-      line: "PasswordAuthentication no"
-    - regexp: "^#PubkeyAuthentication"
-      line: "PubkeyAuthentication yes"
-    - regexp: "^#AuthorizedKeysFile"
-      line: "AuthorizedKeysFile	.ssh/authorized_keys"
+  when: sshd_sss_config_enable == 'yes'
+  block:
+    - name: Update SSHD config
+      lineinfile:
+        backup: yes
+        dest: "/etc/ssh/sshd_config"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+        validate: 'sshd -T -f %s'
+        mode: 0644
+      with_items:
+        - regexp: "^#AuthorizedKeysCommandUser"
+          line: "AuthorizedKeysCommandUser root"
+        - regexp: "^#AuthorizedKeysCommand"
+          line: "AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys"
+        - regexp: "^#PasswordAuthentication"
+          line: "PasswordAuthentication no"
+        - regexp: "^#PubkeyAuthentication"
+          line: "PubkeyAuthentication yes"
+        - regexp: "^#AuthorizedKeysFile"
+          line: "AuthorizedKeysFile	.ssh/authorized_keys"
