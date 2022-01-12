@@ -20,11 +20,10 @@ jobs:
 
       - run: pip3 install ansible molecule molecule-vagrant ansible-lint
 
-      - name: Configure vagrant
+      - name: get tools version
         run: |
           vagrant --version
           ansible --version
-          vagrant ssh-config > vagrant-ssh; ssh -F vagrant-ssh default
 
       - name: Run test molecule
         shell: bash
