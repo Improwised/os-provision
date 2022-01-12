@@ -13,23 +13,24 @@
         sleep: 5
 
     - name: Verify sshd is running
+      when: sshd_sss_config_enable == 'yes'
       ansible.builtin.service:
         name: "sshd"
         state: started
         sleep: 5
 
     - name: Verify sss ssh working
-      ansible.builtin.command: /usr/bin/sss_ssh_authorizedkeys ansible-test
+      ansible.builtin.command: /usr/bin/sss_ssh_authorizedkeys pratikbalar
       register: ansible_test_sss
       retries: 3
       delay: 30
       until: ansible_test_sss.stdout | length > 0
 
-    - name: Set ansible-test user's private ssh key
-      ansible.builtin.set_fact:
-        ansible_ssh_private_key_file: "molecule/default/files/vagrant_rsa"
+    # - name: Set ansible-test user's private ssh key
+    #   ansible.builtin.set_fact:
+    #     ansible_ssh_private_key_file: "molecule/default/files/vagrant_rsa"
 
-    - name: Reset ssh connection for user ansible-test
-      become: yes
-      become_user: "ansible-test"
-      meta: reset_connection
+    # - name: Reset ssh connection for user ansible-test
+    #   become: yes
+    #   become_user: "ansible-test"
+    #   meta: reset_connection

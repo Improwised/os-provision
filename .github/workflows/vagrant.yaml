@@ -20,7 +20,7 @@ jobs:
 
       - run: pip3 install ansible molecule molecule-vagrant ansible-lint
 
-      - name: get tools version
+      - name: Get tools version
         run: |
           vagrant --version
           ansible --version
