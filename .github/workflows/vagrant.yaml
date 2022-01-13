@@ -23,7 +23,7 @@ jobs:
           ansible --version
 
       - name: Test playbook
-        run: vagrant up --debug-timestamp
+        run: vagrant up
 
       # - name: Run test molecule
       #   shell: bash
