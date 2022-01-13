@@ -1,8 +1,7 @@
 name: vagrant-up
 on:
   push:
-    paths:
-      - "!**.md"
+
 jobs:
   vagrant-up:
     runs-on: macos-10.15
