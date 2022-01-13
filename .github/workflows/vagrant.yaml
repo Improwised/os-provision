@@ -2,9 +2,7 @@ name: vagrant-up
 on:
   push:
     paths:
-      - "playbook.yaml"
-      - "ansible/roles/**"
-      - ".github/workflows/vagrant.yaml"
+      - "!**.md"
 jobs:
   vagrant-up:
     runs-on: macos-10.15
