@@ -1,8 +1,9 @@
 ## remaining:
-  ## Pacman mirrors
-  ## Lable all tools
+## Pacman mirrors
+## Lable all tools
 
-- hosts: all
+- hosts: localhost
+  connection: local
   become: true
   tasks:
     - name: pacman -Syu
@@ -13,7 +14,7 @@
       tags: [always, syu]
 
     - name: Include task list in play
-      include_tasks: ansible/tasks/tools/install-tools.yaml
+      include_tasks: ansible/tasks/tools/main.yaml
 
     - name: Parallel package downloads to 3
       ansible.builtin.lineinfile:
@@ -34,7 +35,7 @@
       community.general.pacman:
         executable: yay
         state: present
-        extra_args: --noconfirm
+        extra_args: --noconfirm --noanswerclean --noanswerdiff  --noansweredit  --noanswerupgrade
         name: "{{ yay }}"
 
     - name: Enable docker without sudo
@@ -89,6 +90,9 @@
         enabled: yes
         state: started
         name: org.cups.cupsd
+
+    - name: Include osqueryd task
+      include_tasks: ansible/tasks/osqueryd/main.yaml
 
     - name: Set login shell of user {{ ansible_env.USER }} to `/bin/zsh` with `usermod`
       ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_env.USER }}

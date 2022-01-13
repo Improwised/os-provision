@@ -1,0 +1,20 @@
+[Unit]
+Description=osqueryd
+After=network.target
+Type=simple
+Restart=on-failure
+RestartSec=10
+User=0
+Group=0
+Environment="ENROLL_SECRET='{{ osqueryd_enroll_secret }}'"
+ExecStop={{ osquery_path | regex_replace('\\/$', '') }}/osqueryctl stop
+ExecStart={{ osquery_path | regex_replace('\\/$', '') }}/osqueryd \
+  --host_identifier={{ ansible_hostname }} \
+  --tls_hostname={{ fleet_endpoint }} \
+  {% for key in osquery_flags.keys() %}
+  --{{ key }}={{ osquery_flags[key] }} \
+  {% endfor %}
+  --force
+
+[Install]
+WantedBy=multi-user.target

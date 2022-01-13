@@ -1,8 +1,6 @@
 devops_pacman:
   [
     doctl,
-    balena-etcher,
-    stern,
     skopeo,
     openldap,
     ufw,
@@ -13,17 +11,18 @@ devops_pacman:
     tree,
     parallel,
     podman,
-    buildah,    ##
-    bash-bats,  ## Bash script testing framework
-    aws-cli,    ## AWS CLI
-    skopeo,     ## Querying container repositories
-    epiphany    ## access HSTS sites some time
+    buildah,
+    bash-bats,
+    aws-cli,
+    skopeo,
+    epiphany,
   ]
 
 devops_yay:
   [
     dive,
     concourse-fly-bin,
-    fluxctl-bin,
+    fluxctl,
     google-cloud-sdk,
+    stern,
   ]

@@ -25,15 +25,19 @@ jobs:
           vagrant --version
           ansible --version
 
-      - name: Run test molecule
+      - name: Run playbook molecule
         shell: bash
-        working-directory: ansible/roles/
-        run: |
-          set -x
-          for role in */ ; do
-              if [ -d "$role" ]; then
-                  cd $role
-                  molecule test --all
-                  cd ..
-              fi
-          done
+        run: vagrant up --debug-timestamp
+
+      # - name: Run test molecule
+      #   shell: bash
+      #   working-directory: ansible/roles/
+      #   run: |
+      #     set -x
+      #     for role in */ ; do
+      #         if [ -d "$role" ]; then
+      #             cd $role
+      #             molecule test --all
+      #             cd ..
+      #         fi
+      #     done

@@ -28,7 +28,8 @@ essential_pacman:
     xclip,
     zsh,
     python-pip,
-    tree
+    tree,
+    osquery=5.0.1,
   ]
 
 essential_yay:
