@@ -33,13 +33,13 @@
           insertbefore: "^auth +required +pam_faillock.so+.*"
           line: "auth  sufficient  pam_sss.so  forward_pass"
         - path: /etc/pam.d/system-auth
-          insertbefore: "^-account"
+          insertbefore: "^-account.*pam_systemd_home.so"
           line: "account  [default=bad success=ok user_unknown=ignore authinfo_unavail=ignore]  pam_sss.so"
         - path: /etc/pam.d/system-auth
-          insertbefore: "^[-]password"
+          insertbefore: "^[-]password.*pam_systemd_home.so"
           line: "password  sufficient  pam_sss.so  use_authtok"
         - path: /etc/pam.d/system-auth
-          insertbefore: "^session"
+          insertbefore: "^[-]session"
           line: "session  required  pam_mkhomedir.so  skel=/etc/skel/ umask=0077"
 
     - name: Setup pam 2
