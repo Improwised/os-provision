@@ -30,20 +30,28 @@ The [First Steps](https://manjaro.org/support/firststeps/) guide is a good resou
 * Alacritty + Oh-my-zsh
 * Other dotfiles and misc stuff
 
-## Installation
+### Bash
 
-```
+```shell
 wget https://raw.githubusercontent.com/Improwised/os-provision/master/install.sh -O - | zsh
 ```
+
 or
 
-```
+```shell
 git clone https://github.com/improwised/os-provision.git
 cd os-provision
 ./install.sh
 ```
 
-### Ansible test through vagrant
+### Ansible
+
+```shell
+## Do not include devops, developer tools and pacman -Syu
+ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd' ansible-playbook playbook.yml -i inv -vvv -K
+```
+
+### Test Ansible through vagrant
 
 ```bash
 vagrant up

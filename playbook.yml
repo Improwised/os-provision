@@ -1,7 +1,21 @@
+## remaining:
+  ## Pacman mirrors
+  ## Lable all tools
+
 - hosts: all
   become: true
   tasks:
-    - name: ParallelDownloads to 3
+    - name: pacman -Syu
+      community.general.pacman:
+        update_cache: yes
+        upgrade: yes
+        extra_args: --noconfirm
+      tags: [always, syu]
+
+    - name: Include task list in play
+      include_tasks: ansible/tasks/tools/install-tools.yaml
+
+    - name: Parallel package downloads to 3
       ansible.builtin.lineinfile:
         backup: yes
         state: present
@@ -10,72 +24,18 @@
         regex: "^ParallelDownloads"
         line: "ParallelDownloads = 3"
 
-    - name: pacman -Syu
-      community.general.pacman:
-        update_cache: yes
-        upgrade: yes
-        extra_args: --noconfirm
-
-    - name: Install official packages
+    - name: Install Official packages
       community.general.pacman:
         state: present
         extra_args: --noconfirm
-        name:
-          [
-            alacritty,
-            baobab,
-            base-devel,
-            dbeaver,
-            docker,
-            docker-compose,
-            fakeroot,
-            fasd,
-            feh,
-            firefox,
-            flameshot,
-            git,
-            gitui,
-            htop,
-            m4,
-            make,
-            nethogs,
-            nuspell,
-            openssh,
-            patch,
-            peek,
-            samba,
-            simple-scan,
-            synapse,
-            tk,
-            vim,
-            vlc,
-            xclip,
-            yay,
-            zsh,
-          ]
+        name: "{{ pacman }}"
 
     - name: Install community packages
       community.general.pacman:
         executable: yay
         state: present
         extra_args: --noconfirm
-        name:
-          [
-            brother-mfc-7860dw,
-            brscan4,
-            concourse-fly-bin,
-            fasd,
-            fluxctl-bin,
-            gitflow-avh,
-            google-chrome,
-            kde-servicemenus-peazip,
-            kubectl-bin,
-            peazip-qt-bin,
-            rslsync,
-            slack-desktop,
-            sublime-text-4,
-            ttf-ms-fonts,
-          ]
+        name: "{{ yay }}"
 
     - name: Enable docker without sudo
       ansible.builtin.group:
@@ -138,3 +98,4 @@
     - name: Run SSSD role
       include_role:
         name: ansible-role-sssd
+      tags: [always, sssd]

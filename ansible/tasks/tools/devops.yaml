@@ -1,0 +1,29 @@
+devops_pacman:
+  [
+    doctl,
+    balena-etcher,
+    stern,
+    skopeo,
+    openldap,
+    ufw,
+    lsod,
+    postgresql,
+    ansible,
+    epiphany,
+    tree,
+    parallel,
+    podman,
+    buildah,    ##
+    bash-bats,  ## Bash script testing framework
+    aws-cli,    ## AWS CLI
+    skopeo,     ## Querying container repositories
+    epiphany    ## access HSTS sites some time
+  ]
+
+devops_yay:
+  [
+    dive,
+    concourse-fly-bin,
+    fluxctl-bin,
+    google-cloud-sdk,
+  ]

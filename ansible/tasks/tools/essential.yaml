@@ -1,0 +1,46 @@
+essential_pacman:
+  [
+    alacritty,
+    baobab,
+    base-devel,
+    docker,
+    docker-compose,
+    fakeroot,
+    fasd,
+    feh,
+    firefox,
+    flameshot,
+    git,
+    gitui,
+    htop,
+    m4,
+    make,
+    nethogs,
+    openssh,
+    patch,
+    peek,
+    samba,
+    simple-scan,
+    synapse,
+    tk,
+    vim,
+    vlc,
+    xclip,
+    zsh,
+    python-pip,
+    tree
+  ]
+
+essential_yay:
+  [
+    brother-mfc-7860dw,
+    brscan4,
+    gitflow-avh,
+    google-chrome,
+    kde-servicemenus-peazip,
+    peazip-qt-bin,
+    rslsync,
+    slack-desktop,
+    sublime-text-4,
+    ttf-ms-fonts,
+  ]
