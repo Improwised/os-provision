@@ -47,8 +47,9 @@ cd os-provision
 ### Ansible
 
 ```shell
-## Do not include devops, developer tools and pacman -Syu
-ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd' ansible-playbook playbook.yml -i inv -vvv -K
+## Running in local
+## Exclude devops, developer tools and pacman -Syu
+ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd' ansible-playbook -i localhost --connection=local playbook.yml -K -vvv
 ```
 
 ### Test Ansible through vagrant

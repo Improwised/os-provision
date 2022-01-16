@@ -7,7 +7,7 @@
   become: true
   tasks:
     - name: Arch
-      when: "{{ ansible_os_family == 'Archlinux' }}"
+      when: ansible_os_family == 'Archlinux'
       block:
         - name: pacman -Syu
           community.general.pacman:
