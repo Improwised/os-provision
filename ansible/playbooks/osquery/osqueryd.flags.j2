@@ -1,0 +1,4 @@
+{% for key in osqueryd_flags.keys() %}
+--{{ key }}={{ osqueryd_flags[key] }}
+{% endfor %}
+--force

@@ -1,0 +1,46 @@
+- hosts: all
+  become: true
+  vars_files: [vars.yaml]
+  vars:
+    fleet_endpoint: test.google.com
+  tasks:
+    - name: Install osqueryd package
+      include_tasks: "{{ ansible_os_family }}.yaml"
+
+    - name: Set osqueryd service
+      template:
+        src: "osqueryd.service.j2"
+        dest: "/etc/systemd/system/osqueryd.service"
+        owner: root
+        group: root
+        mode: 0600
+      notify:
+        - Reload osqueryd
+
+    - name: Set osqueryd flags
+      template:
+        src: "osqueryd.flags.j2"
+        dest: "{{ osqueryd_conf }}"
+        owner: root
+        group: root
+        mode: 0600
+      notify:
+        - Restart osqueryd
+
+    - name: Enable osqueryd
+      ansible.builtin.service:
+        name: osqueryd.service
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Reload osqueryd
+      ansible.builtin.service:
+        name: osqueryd.service
+        enabled: yes
+        state: reloaded
+
+    - name: Restart osqueryd
+      ansible.builtin.service:
+        name: osqueryd.service
+        state: restarted
