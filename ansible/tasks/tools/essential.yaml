@@ -27,6 +27,7 @@ essential_pacman:
     vlc,
     xclip,
     zsh,
+    python,
     python-pip,
     tree,
     osquery=5.0.1,
