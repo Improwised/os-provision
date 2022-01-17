@@ -4,7 +4,6 @@ devops_pacman:
     skopeo,
     openldap,
     ufw,
-    lsod,
     postgresql,
     ansible,
     epiphany,

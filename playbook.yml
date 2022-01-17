@@ -15,7 +15,7 @@
             extra_args: --noconfirm
 
         - name: Include task list in play
-          include_tasks: ansible/tasks/tools/main.yaml
+          import_tasks: ansible/tasks/tools/main.yaml
 
         - name: Parallel package downloads to 3
           ansible.builtin.lineinfile:
