@@ -15,10 +15,6 @@ jobs:
           key: ${{ runner.os }}-pip-
           restore-keys: ${{ runner.os }}-pip-${{ hashFiles('.github/workflows/**') }}
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-
       - run: pip install --user ansible molecule molecule-vagrant ansible-lint
 
       - name: Get tools version
