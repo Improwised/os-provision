@@ -15,10 +15,11 @@ jobs:
           key: ${{ runner.os }}-pip-
           restore-keys: ${{ runner.os }}-pip-${{ hashFiles('.github/workflows/**') }}
 
-      - run: pip3 install ansible molecule molecule-vagrant ansible-lint
+      - run: pip install ansible molecule molecule-vagrant ansible-lint
 
       - name: Get tools version
         run: |
+          set -x
           vagrant --version
           ansible --version
           python --version || true
