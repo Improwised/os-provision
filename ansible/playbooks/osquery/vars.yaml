@@ -2,8 +2,8 @@
 osqueryd_deb: https://pkg.osquery.io/deb/osquery_5.1.0-1.linux_amd64.deb
 osqueryd_enroll_secret: fasdf
 osqueryd_path: /usr/bin/
-
-osqueryd_conf: /etc/osquery/osquery.flags
+osqueryd_conf: osquery.conf
+osqueryd_flags_file: /etc/osquery/osquery.flags
 osqueryd_flags:
   enroll_tls_endpoint: /api/v1/osquery/enroll
   config_plugin: tls

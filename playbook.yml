@@ -22,7 +22,7 @@
           import_tasks: ansible/tasks/tools/main.yaml
 
         - name: Parallel package downloads to 3
-          lineinfile:
+          ansible.builtin.lineinfile:
             backup: yes
             state: present
             path: "/etc/pacman.conf"
@@ -115,6 +115,7 @@
           git:
             repo: https://github.com/robbyrussell/oh-my-zsh
             dest: ~/.oh-my-zsh
+            depth: 1
           when: not stat_oh_my_zsh_result.stat.exists
 
         - name: Creating new ~/.zshrc

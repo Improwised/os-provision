@@ -1,11 +1,25 @@
 - hosts: all
   become: true
   vars_files: [vars.yaml]
-  vars:
-    fleet_endpoint: test.google.com
   tasks:
     - name: Install osqueryd package
       include_tasks: "{{ ansible_os_family }}.yaml"
+
+    - name: Creates directory - Link /usr/bin/osqueryd to /opt/osquery/bin/osqueryd for osqueryctl
+      file:
+        path: /opt/osquery/bin/
+        state: directory
+        owner: root
+        group: root
+        recurse: yes
+
+    - name: Create link - Link /usr/bin/osqueryd to /opt/osquery/bin/osqueryd for osqueryctl
+      ansible.builtin.file:
+        src: /usr/bin/osqueryd
+        dest: /opt/osquery/bin/osqueryd
+        owner: root
+        group: root
+        state: link
 
     - name: Set osqueryd service
       template:
@@ -20,17 +34,50 @@
     - name: Set osqueryd flags
       template:
         src: "osqueryd.flags.j2"
-        dest: "{{ osqueryd_conf }}"
+        dest: "{{ osqueryd_flags_file }}"
         owner: root
         group: root
         mode: 0600
       notify:
         - Reload osqueryd
 
-    - name: Enable osqueryd
+    - name: Copy osqueryd conf
+      ansible.builtin.copy:
+        src: "{{ osqueryd_conf }}"
+        dest: /etc/osquery/osquery.conf_bak
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: Stat remote osqueryd conf
+      stat:
+        path: "/etc/osquery/osquery.conf"
+      register: osqueryd_remote_conf
+
+    - name: Stat local(in remote) osqueryd conf
+      stat:
+        path: "/etc/osquery/osquery.conf_bak"
+      register: osqueryd_local_conf
+
+    - name: Stop osqueryd
       ansible.builtin.service:
         name: osqueryd.service
-        state: started
+        state: stopped
+      when: osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
+
+    - name: Copy osqueryd conf
+      ansible.builtin.copy:
+        src: "{{ osqueryd_conf }}"
+        dest: /etc/osquery/osquery.conf_bak
+        owner: root
+        group: root
+        mode: 0600
+      when: osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
+
+    - name: "{{ 'Start' if osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum else 'Restart' }} osqueryd"
+      ansible.builtin.service:
+        name: osqueryd.service
+        state: "{{ 'started' if osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum else 'restarted' }}"
         enabled: yes
 
   handlers:
