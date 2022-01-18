@@ -22,13 +22,12 @@
           import_tasks: ansible/tasks/tools/main.yaml
 
         - name: Parallel package downloads to 3
-          ansible.builtin.lineinfile:
+          ansible.builtin.replace:
             backup: yes
-            state: present
             path: "/etc/pacman.conf"
-            insertafter: '^\[options\]$'
+            after: '^\[options\]$'
             regex: "^ParallelDownloads"
-            line: "ParallelDownloads = 3"
+            replace: "ParallelDownloads = 3"
 
         - name: Install Official packages
           community.general.pacman:
