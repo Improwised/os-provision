@@ -3,3 +3,19 @@
     state: present
     extra_args: --noconfirm
     name: "osquery"
+
+- name: Creates directory - Link /usr/bin/osqueryd to /opt/osquery/bin/osqueryd for osqueryctl
+  file:
+    path: /opt/osquery/bin/
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+
+- name: Create link - Link /usr/bin/osqueryd to /opt/osquery/bin/osqueryd for osqueryctl
+  ansible.builtin.file:
+    src: /usr/bin/osqueryd
+    dest: /opt/osquery/bin/osqueryd
+    owner: root
+    group: root
+    state: link
