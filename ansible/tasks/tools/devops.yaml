@@ -1,5 +1,6 @@
 devops_pacman:
   [
+    helm,
     doctl,
     skopeo,
     openldap,
@@ -23,5 +24,5 @@ devops_yay:
     concourse-fly-bin,
     fluxctl,
     google-cloud-sdk,
-    stern,
+    github-cli,
   ]

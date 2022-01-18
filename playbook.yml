@@ -1,6 +1,7 @@
 ## remaining:
 ## Pacman mirrors
 ## Lable all tools
+## Printer
 
 - hosts: all
   become: true
@@ -13,12 +14,15 @@
             update_cache: yes
             upgrade: yes
             extra_args: --noconfirm
+          tags: [always, syu]
+          retries: 3
+          delay: 30
 
         - name: Include task list in play
           import_tasks: ansible/tasks/tools/main.yaml
 
         - name: Parallel package downloads to 3
-          ansible.builtin.lineinfile:
+          lineinfile:
             backup: yes
             state: present
             path: "/etc/pacman.conf"
@@ -33,10 +37,8 @@
             name: "{{ pacman }}"
 
         - name: Install community packages
-          community.general.pacman:
-            executable: yay
+          yay:
             state: present
-            extra_args: --noconfirm --noanswerclean --noanswerdiff  --noansweredit  --noanswerupgrade
             name: "{{ yay }}"
 
         - name: Enable docker without sudo
@@ -62,7 +64,7 @@
         - name: Check grub exist
           stat:
             path: /etc/default/grub
-          register: grub_exist
+          register: stat_grub_exist
 
         - name: Reduce GRUB timeout
           ansible.builtin.lineinfile:
@@ -71,7 +73,7 @@
             path: /etc/default/grub
             regexp: "^GRUB_TIMEOUT="
             line: "GRUB_TIMEOUT=0"
-          when: grub_exist.stat.exists
+          when: stat_grub_exist.stat.exists
           notify: Update grub
 
         - name: Reduce swappiness
@@ -82,7 +84,7 @@
         - name: Check gdm exist
           stat:
             path: /etc/gdm/custom.conf
-          register: gdm_exist
+          register: stat_gdm_exist
 
         - name: Disable wayland
           ansible.builtin.lineinfile:
@@ -91,22 +93,45 @@
             path: /etc/gdm/custom.conf
             regexp: "^WaylandEnable=true"
             line: "WaylandEnable=false"
-          when: gdm_exist.stat.exists
+          when: stat_gdm_exist.stat.exists
 
-        - name: Printer
-          ansible.builtin.systemd:
-            enabled: yes
-            state: started
-            name: org.cups.cupsd
+        # - name: Printer
+        #   ansible.builtin.systemd:
+        #     enabled: yes
+        #     state: started
+        #     name: org.cups.cupsd
 
-        - name: Set login shell of user {{ ansible_env.USER }} to `/bin/zsh` with `usermod`
-          ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_env.USER }}
+        - name: Check if .zshrc exists
+          stat:
+            path: ~/.zshrc
+          register: stat_rc_result
+
+        - name: Check if .oh-my-zsh exists
+          stat:
+            path: ~/.oh-my-zsh
+          register: stat_oh_my_zsh_result
+
+        - name: Cloning oh-my-zsh
+          git:
+            repo: https://github.com/robbyrussell/oh-my-zsh
+            dest: ~/.oh-my-zsh
+          when: not stat_oh_my_zsh_result.stat.exists
+
+        - name: Creating new ~/.zshrc
+          copy:
+            src: ~/.oh-my-zsh/templates/zshrc.zsh-template
+            dest: ~/.zshrc
+          when: not stat_rc_result.stat.exists
+
+        - name: Set login shell of user {{ ansible_user_id }} to `/bin/zsh` with `usermod`
+          ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_user_id }}
           become: false
           changed_when: false
 
     - name: Run SSSD role
       include_role:
         name: ansible-role-sssd
+      tags: [always, sssd]
 
   handlers:
     - name: Update grub
@@ -114,3 +139,4 @@
 
 - name: Install osqueryd
   import_playbook: ansible/playbooks/osquery/playbook.yaml
+  tags: [always, osquery, osqueryd]

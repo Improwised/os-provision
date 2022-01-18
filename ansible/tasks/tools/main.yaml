@@ -2,6 +2,7 @@
   set_fact:
     pacman: [yay]
     yay: []
+  tags: [always]
 
 - block:
     - name: Include Essential tool list
@@ -14,6 +15,7 @@
     - name: (yay) Append Essential tool list
       set_fact:
         yay: "{{ yay + essential_yay }}"
+  tags: [always, essential]
 
 - block:
     - name: Include DevOps tool list
@@ -26,6 +28,7 @@
     - name: (yay) Append DevOps tool list
       set_fact:
         yay: "{{ yay + devops_yay }}"
+  tags: [devops]
 
 - block:
     - name: Include developer tool list
@@ -38,3 +41,4 @@
     - name: (yay) Append developer tool list
       set_fact:
         yay: "{{ yay + developer_yay }}"
+  tags: [developer]

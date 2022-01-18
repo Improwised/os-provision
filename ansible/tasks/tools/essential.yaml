@@ -31,6 +31,7 @@ essential_pacman:
     python-pip,
     tree,
     osquery=5.0.1,
+    iputils
   ]
 
 essential_yay:
@@ -39,7 +40,6 @@ essential_yay:
     brscan4,
     gitflow-avh,
     google-chrome,
-    kde-servicemenus-peazip,
     peazip-qt-bin,
     rslsync,
     slack-desktop,

@@ -48,12 +48,12 @@ cd os-provision
 
 ```shell
 ## Running in local
-## Exclude devops, developer tools and pacman -Syu
-ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd' ansible-playbook -i localhost --connection=local playbook.yml -K -vvv
+## Exclude devops, developer tools, 'pacman -Syu', sssd, osqueryd
+ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd,osqueryd' ansible-playbook -i inv playbook.yml --connection=local -K -vvv
 ```
 
 ### Test Ansible through vagrant
 
-```bash
+```shell
 vagrant up
 ```
