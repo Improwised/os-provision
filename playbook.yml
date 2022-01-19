@@ -2,6 +2,7 @@
 ## Pacman mirrors
 ## Lable all tools
 ## Printer
+## Set zsh as user's login shell
 
 - hosts: all
   become: true

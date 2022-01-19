@@ -8,10 +8,10 @@ Restart=on-failure
 RestartSec=10
 User=root
 Group=root
-Environment="ENROLL_SECRET='{{ osqueryd_enroll_secret }}'"
+EnvironmentFile={{ fleet_secret_env_file }}
 ExecStop={{ osqueryd_path | regex_replace('\\/$', '') }}/osqueryctl stop
 ExecStart={{ osqueryd_path | regex_replace('\\/$', '') }}/osqueryd \
-  --flagfile={{ osqueryd_conf }} \
+  --flagfile={{ osqueryd_flags_file }}\
   --host_identifier={{ ansible_hostname }} \
   --tls_hostname={{ fleet_endpoint }} \
   --enroll_secret_env=ENROLL_SECRET

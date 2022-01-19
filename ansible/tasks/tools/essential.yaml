@@ -1,5 +1,6 @@
 essential_pacman:
   [
+    jq,
     alacritty,
     baobab,
     base-devel,
@@ -30,8 +31,10 @@ essential_pacman:
     python,
     python-pip,
     tree,
+    ufw,
     osquery=5.0.1,
-    iputils
+    iputils, ## for ping
+    bind, ## For dig
   ]
 
 essential_yay:

@@ -2,27 +2,25 @@ devops_pacman:
   [
     helm,
     doctl,
-    skopeo,
     openldap,
-    ufw,
-    postgresql,
     ansible,
     epiphany,
     tree,
-    parallel,
     podman,
-    buildah,
-    bash-bats,
-    aws-cli,
     skopeo,
-    epiphany,
+    aws-cli,
+    terraform,
+    epiphany, ## for accessing non HSTS
   ]
 
 devops_yay:
   [
+    k9,
+    ngrok,
     dive,
     concourse-fly-bin,
     fluxctl,
     google-cloud-sdk,
+    lazydocker-bin,
     github-cli,
   ]

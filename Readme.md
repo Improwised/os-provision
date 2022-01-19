@@ -52,6 +52,11 @@ cd os-provision
 ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd,osqueryd' ansible-playbook -i inv playbook.yml --connection=local -e fleet_endpoint=test.google.com -K -vvv
 ```
 
+Root user `sensei`:`6JHnhVpRm7v8jjoCavryqSdGNAAJB2tn`:`$6$xjqDUB5wkcilITSw$IkXaC39cggNY98i75cpQcHJLkttfW3HDKqztz24zt64XrxxQLtBn63FVdXHr3Agxgkb3e5YMTUjKsPxks0lOS/`
+
+> python -m pip install --user passlib
+> python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.using(rounds=5000).hash(getpass.getpass()))"
+
 ### Test Ansible through vagrant
 
 ```shell
