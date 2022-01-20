@@ -30,7 +30,7 @@
       blockinfile:
         path: /etc/ssh/sshd_config
         marker: "# {mark} ANSIBLE MANAGED BLOCK {{ root_username }}"
-        validate: /usr/bin/sshd -f %s
+        validate: sshd -T -f %s
         backup: yes
         block: |
           Match User {{ root_username }}
