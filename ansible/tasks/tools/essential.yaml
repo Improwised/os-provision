@@ -28,6 +28,7 @@ essential_pacman:
     vlc,
     xclip,
     zsh,
+    htop,
     python,
     python-pip,
     tree,

@@ -12,9 +12,7 @@
   ansible.builtin.file:
     path: "{{ ldap_file }}"
     state: touch
-    mode: u+rw,g-rwx,o-rwx
-    modification_time: preserve
-    access_time: preserve
+    mode: 0644
 
 - name: configure LDAP
   ansible.builtin.lineinfile:
@@ -30,7 +28,6 @@
     dest: /etc/sssd/sssd.conf
     mode: 0600
     group: root
-    owner: root
   notify: restart sssd
 
 - name: Configure sshd

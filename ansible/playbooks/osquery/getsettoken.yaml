@@ -28,6 +28,5 @@
     content: |
       ENROLL_SECRET='{{ current_token }}'
     dest: "{{ fleet_secret_env_file }}"
-    owner: root
     group: root
     mode: 0600

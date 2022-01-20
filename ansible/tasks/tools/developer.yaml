@@ -3,6 +3,7 @@ developer_pacman:
     docker,
     docker-compose,
     dbeaver,
+    ngrok,
   ]
 
 developer_yay:

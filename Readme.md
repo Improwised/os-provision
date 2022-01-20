@@ -49,15 +49,16 @@ cd os-provision
 ```shell
 ## Running in local
 ## Exclude devops, developer tools, 'pacman -Syu', sssd, osqueryd
-ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd,osqueryd' ansible-playbook -i 127.0.0.1, --connection=local --limit 127.0.0.1 playbook.yml --connection=local -e fleet_endpoint=fleet.improwised.dev -K -vvv
+ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd' ansible-playbook -i 127.0.0.1, --connection=local --limit 127.0.0.1 playbook.yml --connection=local -K -vvv
 ```
 
-Root user `sensei`:`6JHnhVpRm7v8jjoCavryqSdGNAAJB2tn`:`$6$xjqDUB5wkcilITSw$IkXaC39cggNY98i75cpQcHJLkttfW3HDKqztz24zt64XrxxQLtBn63FVdXHr3Agxgkb3e5YMTUjKsPxks0lOS/`
+Root user `sensei`:`6JHnhVpRm7v8jjoCavryqSdGNAAJB2tn`:`$6$iaRpHufUmAJq0oT9$0sPOKtPZ264WiWrnDmClyRW5W/a03hpQVIhzXwSChKYZ/Tim2IEjsWehPYsLjg.QwKcENmCHVgB3UHd29Hd4R0`
 
 > python -m pip install --user passlib
+
 > python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.using(rounds=5000).hash(getpass.getpass()))"
 
-### Test Ansible through vagrant
+### Test Ansible
 
 ```shell
 vagrant up

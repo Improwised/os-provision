@@ -8,7 +8,6 @@
   file:
     path: /opt/osquery/bin/
     state: directory
-    owner: root
     group: root
     recurse: yes
 
@@ -16,6 +15,5 @@
   ansible.builtin.file:
     src: /usr/bin/osqueryd
     dest: /opt/osquery/bin/osqueryd
-    owner: root
     group: root
     state: link

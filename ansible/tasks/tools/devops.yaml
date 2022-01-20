@@ -15,8 +15,7 @@ devops_pacman:
 
 devops_yay:
   [
-    k9,
-    ngrok,
+    k9s,
     dive,
     concourse-fly-bin,
     fluxctl,

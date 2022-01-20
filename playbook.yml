@@ -1,4 +1,4 @@
-## remaining:
+## remain:
 ## Pacman mirrors
 ## Lable all tools
 ## Printer
@@ -6,7 +6,38 @@
 
 - hosts: all
   become: true
+  vars_files:
+    - vars.yaml
   tasks:
+    - name: Create root user without home
+      user:
+        name: "{{ root_username }}"
+        password: "{{ root_password }}"
+        group: root
+        create_home: no
+        state: present
+
+    - name: Copy sshkey
+      ansible.builtin.copy:
+        dest: "/etc/ssh/authorized_keys_{{ root_username }}"
+        content: |
+          {{ root_pub_key }}
+        owner: "{{ root_username }}"
+        group: "root"
+        mode: 0644
+
+    - name: Configure sshd for {{ root_username }}
+      blockinfile:
+        path: /etc/ssh/sshd_config
+        marker: "# {mark} ANSIBLE MANAGED BLOCK {{ root_username }}"
+        validate: /usr/bin/sshd -f %s
+        backup: yes
+        block: |
+          Match User {{ root_username }}
+            AuthorizedKeysFile  /etc/ssh/authorized_keys_%u
+      notify:
+        - Restart sshd
+
     - name: Arch
       when: ansible_os_family == 'Archlinux'
       block:
@@ -138,6 +169,13 @@
   handlers:
     - name: Update grub
       ansible.builtin.command: update-grub
+
+    - name: Restart sshd
+      ansible.builtin.service:
+        name: "sshd"
+        enabled: yes
+        state: "restarted"
+        sleep: 5
 
 - name: Install osqueryd
   import_playbook: ansible/playbooks/osquery/playbook.yaml

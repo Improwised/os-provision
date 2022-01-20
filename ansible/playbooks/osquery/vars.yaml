@@ -1,8 +1,9 @@
 ## If you want to use password, fleet_login_cred: mytestusername:mytestpassword
 ## Else bearer is default auth mechanism
-fleet_login_cred: 3wm1eh/6gturUj4YGul71mMvdbJbZi0h0iOgbXWIisAFdhVZJN9FWSpj1Ff2IVDZvSfLLGdZAmQls2pxJz2lNw==
+# fleet_login_cred: username:pass
+fleet_login_cred: bearertoken
 
-fleet_endpoint: fleet.improwised.dev
+fleet_endpoint: test.google.com
 
 ## Defaults
 fleet_secret_env_file: /etc/osquery/osqueryd_env.conf

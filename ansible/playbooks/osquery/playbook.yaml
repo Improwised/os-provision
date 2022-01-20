@@ -4,26 +4,28 @@
   vars_files:
     - vars.yaml
   tasks:
+    - name: Create osquery log dir if not exist
+      ansible.builtin.file:
+        path: /etc/osquery/
+        state: directory
+        mode: 0644
+        group: root
+
     - name: Stat env file
       stat:
         path: /etc/osquery/osqueryd_env.conf
       register: osqueryd_env_file
 
-    - name: Create osquery log dir
+    - name: Create osquery log dir if not exist
       ansible.builtin.file:
         path: /var/log/osquery/
         state: directory
-        mode: '0600'
-        owner: root
+        mode: 0644
         group: root
-    # - name: Hostname lenght
-    #   set_fact:
-    #     hostname_length: "{{ ansible_hostname | length | int }}"
-    #   when: osqueryd_env_file.stat.exists is not true
 
     - name: Hostname lenght
       set_fact:
-        hostname_length_minus: "{{ 31 - ansible_hostname|length|int }}" #Ansible arithmetic substraction 1
+        hostname_length_minus: "{{ 31 - ansible_hostname|length|int }}"
       when: osqueryd_env_file.stat.exists is not true
 
     - name: Generate random stringjou
@@ -85,9 +87,8 @@
       template:
         src: "templates/osqueryd.service.j2"
         dest: "/etc/systemd/system/osqueryd.service"
-        owner: root
         group: root
-        mode: 0600
+        mode: 0644
       notify:
         - Reload osqueryd
 
@@ -95,9 +96,8 @@
       template:
         src: "templates/osqueryd.flags.j2"
         dest: "{{ osqueryd_flags_file }}"
-        owner: root
         group: root
-        mode: 0600
+        mode: 0644
       notify:
         - Reload osqueryd
 
@@ -105,9 +105,8 @@
       ansible.builtin.copy:
         src: "templates/osquery.conf"
         dest: "{{ osqueryd_conf }}_bak"
-        owner: root
         group: root
-        mode: 0600
+        mode: 0644
 
     - name: Stat remote osqueryd conf
       stat:
@@ -129,9 +128,8 @@
       ansible.builtin.copy:
         src: "templates/osquery.conf"
         dest: "{{ osqueryd_conf }}"
-        owner: root
         group: root
-        mode: 0600
+        mode: 0644
       when: osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
 
     - name: Enable osqueryd
@@ -146,8 +144,8 @@
         state: "{{ 'started' if osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum else 'restarted' }}"
         enabled: yes
       when:
-      - osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
-      - osqueryd_env_file.stat.exists is not true
+        - osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
+        - osqueryd_env_file.stat.exists is not true
 
   handlers:
     - name: Reload osqueryd
