@@ -49,7 +49,7 @@ cd os-provision
 ```shell
 ## Running in local
 ## Exclude devops, developer tools, 'pacman -Syu', sssd, osqueryd
-ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd,osqueryd' ansible-playbook -i inv playbook.yml --connection=local -e fleet_endpoint=test.google.com -K -vvv
+ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd,osqueryd' ansible-playbook -i 127.0.0.1, --connection=local --limit 127.0.0.1 playbook.yml --connection=local -e fleet_endpoint=fleet.improwised.dev -K -vvv
 ```
 
 Root user `sensei`:`6JHnhVpRm7v8jjoCavryqSdGNAAJB2tn`:`$6$xjqDUB5wkcilITSw$IkXaC39cggNY98i75cpQcHJLkttfW3HDKqztz24zt64XrxxQLtBn63FVdXHr3Agxgkb3e5YMTUjKsPxks0lOS/`
