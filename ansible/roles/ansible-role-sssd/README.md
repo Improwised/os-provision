@@ -8,7 +8,7 @@ Ansible role to provision SSSD LDAP with PAM on debian and arch
 
 ## Role Variables
 
-Available variables are listed below, along with default values (see defaults/main.yml):
+Available variables are listed below, along with default values (see defaults/main.yaml):
 
 `sssd_restarted_state`: sssd service restarted state (default "restarted")
 
