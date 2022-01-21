@@ -15,7 +15,7 @@ jobs:
       #     key: ${{ runner.os }}-pip-
       #     restore-keys: ${{ runner.os }}-pip-${{ hashFiles('.github/workflows/**') }}
 
-      # - run: pip3 install ansible ansible-core molecule molecule-vagrant ansible-lint lineinfile
+      - run: CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments pip3 install ansible ansible-core molecule molecule-vagrant ansible-lint lineinfile
 
       # - name: Get tools version
       #   run: |
