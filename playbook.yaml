@@ -41,27 +41,6 @@
     - name: Arch
       when: ansible_os_family == 'Archlinux'
       block:
-        - name: 'pacman -Syu'
-          community.general.pacman:
-            update_cache: yes
-            upgrade: yes
-            extra_args: --noconfirm --ignoregroup=ansible
-          tags: [always, syu]
-          async: 5
-          poll: 0
-          register: pacman_syu_sleeper
-
-        - name: 'Check - pacman -Syu'
-          tags: [always, syu]
-          async_status:
-            jid: "{{ pacman_syu_sleeper.ansible_job_id }}"
-          register: job_result
-          until: job_result.finished
-          retries: 3
-
-        - name: Include task list in play
-          import_tasks: ansible/tasks/tools/main.yaml
-
         - name: Parallel package downloads to 3
           ansible.builtin.lineinfile:
             backup: yes
@@ -70,6 +49,36 @@
             insertafter: '^\[options\]$'
             regex: "^ParallelDownloads"
             line: "ParallelDownloads = 3"
+
+        - name: pacman -Syu
+          community.general.pacman:
+            update_cache: yes
+            upgrade: yes
+            extra_args: --noconfirm
+          tags: [always, syu]
+          retries: 3
+          delay: 30
+
+        # - name: "pacman -Syu"
+        #   community.general.pacman:
+        #     update_cache: yes
+        #     upgrade: yes
+        #     extra_args: --noconfirm --ignoregroup=ansible
+        #   tags: [always, syu]
+        #   async: 5
+        #   poll: 0
+        #   register: pacman_syu_sleeper
+
+        # - name: "Check - pacman -Syu"
+        #   tags: [always, syu]
+        #   async_status:
+        #     jid: "{{ pacman_syu_sleeper.ansible_job_id }}"
+        #   register: job_result
+        #   until: job_result.finished
+        #   retries: 3
+
+        - name: Include task list in play
+          import_tasks: ansible/tasks/tools/main.yaml
 
         - name: Install Official packages
           community.general.pacman:
