@@ -6,7 +6,7 @@
 
 - block:
     - name: Include Essential tool list
-      include_vars: essential.yaml
+      include_vars: essential.yml
 
     - name: Append Essential tool list
       set_fact:
@@ -19,7 +19,7 @@
 
 - block:
     - name: Include DevOps tool list
-      include_vars: devops.yaml
+      include_vars: devops.yml
 
     - name: Append DevOps tool list
       set_fact:
@@ -32,7 +32,7 @@
 
 - block:
     - name: Include developer tool list
-      include_vars: developer.yaml
+      include_vars: developer.yml
 
     - name: Append developer tool list
       set_fact:

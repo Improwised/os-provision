@@ -4,13 +4,13 @@
 #     msg: "{{ testing }}"
 
 # tasks file for sssd
-- include_tasks: variables.yaml
+- include_tasks: variables.yml
 
 # Setup/install tasks.
-- include_tasks: setup-archlinux.yaml
+- include_tasks: setup-archlinux.yml
   when: ansible_os_family == 'Archlinux'
 
-- include_tasks: setup-debian.yaml
+- include_tasks: setup-debian.yml
   when: ansible_os_family == 'Debian'
 
-- include_tasks: common.yaml
+- include_tasks: common.yml

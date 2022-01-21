@@ -2,7 +2,7 @@
   become: true
   serial: 1
   vars_files:
-    - vars.yaml
+    - vars.yml
   tasks:
     - name: Create osquery log dir if not exist
       ansible.builtin.file:
@@ -53,7 +53,7 @@
             fleet_bearer_token: "{{ login_info.json.token }}"
 
         - name: Get Set token
-          import_tasks: getsettoken.yaml
+          include_tasks: getsettoken.yml
 
         - name: Logout from {{ fleet_endpoint }}
           uri:
@@ -75,13 +75,13 @@
             fleet_bearer_token: "{{ fleet_login_cred }}"
 
         - name: Get Set token
-          import_tasks: getsettoken.yaml
+          include_tasks: getsettoken.yml
       when:
         - fleet_login_cred is not search(":")
         - osqueryd_env_file.stat.exists is not true
 
     - name: Install osqueryd package
-      include_tasks: "{{ ansible_os_family }}.yaml"
+      include_tasks: "{{ ansible_os_family }}.yml"
 
     - name: Set osqueryd service
       template:

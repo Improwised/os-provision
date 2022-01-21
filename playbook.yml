@@ -7,7 +7,7 @@
 - hosts: all
   become: true
   vars_files:
-    - vars.yaml
+    - vars.yml
   tasks:
     - name: Create root user without home
       user:
@@ -78,7 +78,7 @@
         #   retries: 3
 
         - name: Include task list in play
-          import_tasks: ansible/tasks/tools/main.yaml
+          include_tasks: ansible/tasks/tools/main.yml
 
         - name: Install Official packages
           community.general.pacman:
@@ -196,5 +196,5 @@
         sleep: 5
 
 - name: Install osqueryd
-  import_playbook: ansible/playbooks/osquery/playbook.yaml
+  include_playbook: ansible/playbooks/osquery/playbook.yml
   tags: [always, osquery, osqueryd]
