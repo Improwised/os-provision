@@ -2,15 +2,7 @@ ansible_args = ["-vvv", "--skip-tags=sssd"]
 
 $script = <<-SCRIPT
 echo Installing ansible
-pacman -Syy python-pip --noconfirm
-ansible --version || version
-python --version || true
-python2 --version || true
-python3 --version || true
-pip --version || true
-pip2 --version || true
-pip3 --version || true
-pip install --user ansible
+pacman -Syy ansible ansible-core ansible-lint molecule python-pip --noconfirm
 SCRIPT
 
 
