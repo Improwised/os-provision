@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   # Run Ansible from the Vagrant VM
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "playbook.yaml"
-    ansible.install_mode = "pip"
+    ansible.install = true
   end
 end
 
