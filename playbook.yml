@@ -196,5 +196,8 @@
         sleep: 5
 
 - name: Install osqueryd
-  include_playbook: ansible/playbooks/osquery/playbook.yml
+  import_playbook: ansible/playbooks/osquery/playbook.yml
+  vars:
+    fleet_login_cred: "{{ fleet_login_cred }}"
+    fleet_endpoint: "{{ fleet_endpoint }}"
   tags: [always, osquery, osqueryd]
