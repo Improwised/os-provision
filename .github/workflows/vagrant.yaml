@@ -17,17 +17,17 @@ jobs:
 
       - run: CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments pip3 install ansible ansible-core molecule molecule-vagrant ansible-lint lineinfile
 
-      # - name: Get tools version
-      #   run: |
-      #     set -x
-      #     vagrant --version
-      #     ansible --version
-      #     python --version || true
-      #     python2 --version || true
-      #     python3 --version || true
-      #     pip --version || true
-      #     pip2 --version || true
-      #     pip3 --version || true
+      - name: Get tools version
+        run: |
+          set -x
+          vagrant --version
+          ansible --version
+          python --version || true
+          python2 --version || true
+          python3 --version || true
+          pip --version || true
+          pip2 --version || true
+          pip3 --version || true
 
       - name: Test playbook
         run: vagrant up
