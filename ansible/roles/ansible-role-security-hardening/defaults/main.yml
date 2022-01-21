@@ -1,0 +1,55 @@
+---
+## Timezone
+timezone: Asia/Kolkata
+
+## SSHD
+security_ssh_enabled: no
+ssh_restart_handler_state: restarted
+security_ssh_port: 22
+security_ssh_usedns: no
+security_ssh_pubkey_auth: yes
+security_ssh_x11_forwarding: no
+security_ssh_permit_root_login: no
+security_ssh_permit_empty_password: no
+security_ssh_gss_api_authentication: no
+security_ssh_password_authentication: no
+security_ssh_challenge_response_auth: no
+
+## Fail2ban
+security_fail2ban_enabled: yes
+fail2ban_restart_handler_state: restarted
+fail2ban_loglevel: "INFO"
+fail2ban_logtarget: /var/log/fail2ban.log
+fail2ban_syslog_target: /var/log/fail2ban.log
+fail2ban_syslog_facility: 1
+fail2ban_socket: /var/run/fail2ban/fail2ban.sock
+fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
+fail2ban_dbpurgeage: 86400
+fail2ban_sendername: "Fail2ban"
+fail2ban_bantime: 600
+fail2ban_maxretry: 3
+fail2ban_findtime: 600
+fail2ban_backend: auto
+fail2ban_destemail: root@localhost
+fail2ban_banaction: iptables-multiport
+fail2ban_banaction_allports: iptables-allports
+fail2ban_mta: sendmail
+fail2ban_protocol: tcp
+fail2ban_chain: INPUT
+fail2ban_action: "%(action_)s"
+fail2ban_services:
+  - name: "sshd"
+fail2ban_ignoreips:
+  - 127.0.0.1/8
+  - ::1
+
+## UFW - https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html
+security_ufw_enabled: no
+ufw_default_deny_incoming: no
+ufw_default_allow_outgoing: yes
+ufw_logging: "off"
+ufw_rules:
+  - rule: allow
+    interface: "{{ ansible_default_ipv4['interface'] }}"
+    to_port: 22
+    protocol: tcp

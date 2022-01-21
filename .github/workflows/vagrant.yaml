@@ -8,12 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Cache pip
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/Library/Caches/pip
-      #     key: ${{ runner.os }}-pip-
-      #     restore-keys: ${{ runner.os }}-pip-${{ hashFiles('.github/workflows/**') }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-pip-
+          restore-keys: ${{ runner.os }}-pip-${{ hashFiles('.github/workflows/**') }}
 
       - run: CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments pip3 install ansible ansible-core molecule molecule-vagrant ansible-lint lineinfile
 
@@ -29,18 +29,20 @@ jobs:
           pip2 --version || true
           pip3 --version || true
 
-      - name: Test playbook
+      - name: Test main playbook
+        continue-on-error: true
         run: vagrant up
 
-      # - name: Run test molecule
-      #   shell: bash
-      #   working-directory: ansible/roles/
-      #   run: |
-      #     set -x
-      #     for role in */ ; do
-      #         if [ -d "$role" ]; then
-      #             cd $role
-      #             molecule test --all
-      #             cd ..
-      #         fi
-      #     done
+      - name: Run test molecule
+        continue-on-error: true
+        shell: bash
+        working-directory: ansible/roles/
+        run: |
+          set -x
+          for role in */ ; do
+              if [ -d "$role" ]; then
+                  cd $role
+                  molecule test --all
+                  cd ..
+              fi
+          done
