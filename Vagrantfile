@@ -3,7 +3,7 @@ ansible_args = ["-vvv", "--skip-tags=sssd"]
 $script = <<-SCRIPT
 echo Installing ansible
 pacman -Syy python-pip --noconfirm
-python -m pip install --user ansible
+python -m pip3 install --user ansible
 SCRIPT
 
 
