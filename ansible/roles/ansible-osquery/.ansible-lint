@@ -1,0 +1,4 @@
+skip_list:
+  - 'yaml'
+warn_list:
+  - no-tabs

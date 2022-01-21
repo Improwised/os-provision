@@ -4,15 +4,18 @@
 ## Printer
 ## Set zsh as user's login shell
 
-- hosts: all
+- name: User sensei
+  hosts: all
   become: true
   vars_files:
     - vars.yml
+  tags: [always]
   tasks:
     - name: Create root user without home
       user:
         name: "{{ root_username }}"
         password: "{{ root_password }}"
+        shell: /bin/nologin
         group: root
         create_home: no
         state: present
@@ -38,6 +41,20 @@
       notify:
         - Restart sshd
 
+  handlers:
+    - name: Restart sshd
+      ansible.builtin.service:
+        name: "sshd"
+        enabled: yes
+        state: "restarted"
+        sleep: 5
+
+- hosts: all
+  become: true
+  vars_files:
+    - vars.yml
+  tags: [always, init]
+  tasks:
     - name: Arch
       when: ansible_os_family == 'Archlinux'
       block:
@@ -50,32 +67,46 @@
             regex: "^ParallelDownloads"
             line: "ParallelDownloads = 3"
 
-        - name: pacman -Syu
-          community.general.pacman:
-            update_cache: yes
-            upgrade: yes
-            extra_args: --noconfirm
-          tags: [always, syu]
-          retries: 3
-          delay: 30
-
-        # - name: "pacman -Syu"
+        # - name: pacman -Syu
         #   community.general.pacman:
         #     update_cache: yes
         #     upgrade: yes
-        #     extra_args: --noconfirm --ignoregroup=ansible
+        #     extra_args: --noconfirm --ignoregroup=ansible --ignore=ansible
         #   tags: [always, syu]
-        #   async: 5
-        #   poll: 0
-        #   register: pacman_syu_sleeper
-
-        # - name: "Check - pacman -Syu"
-        #   tags: [always, syu]
-        #   async_status:
-        #     jid: "{{ pacman_syu_sleeper.ansible_job_id }}"
-        #   register: job_result
-        #   until: job_result.finished
         #   retries: 3
+        #   delay: 30
+
+        - name: pacman -Syu
+          tags: [always, syu]
+          block:
+            - name: "pacman -Syu"
+              community.general.pacman:
+                update_cache: yes
+                upgrade: yes
+                extra_args: --noconfirm --ignoregroup=ansible --ignore=ansible
+              async: 1000
+              poll: 0
+              register: pacman_syu_sleeper
+
+            - name: "Check - pacman -Syu"
+              async_status:
+                jid: "{{ pacman_syu_sleeper.ansible_job_id }}"
+              register: job_result
+              until: job_result.finished
+              retries: 100
+              delay: 10
+
+          rescue:
+            - name: "Cleanup - pacman -Syu"
+              async_status:
+                jid: "{{ pacman_syu_sleeper.ansible_job_id }}"
+                mode: cleanup
+              delay: 5
+              retries: 3
+
+            - name: pacman -Syu
+              fail:
+                msg: pacman -Syu failed
 
         - name: Include task list in play
           include_tasks: ansible/tasks/tools/main.yml
@@ -176,28 +207,45 @@
 
         - name: Set login shell of user {{ ansible_user_id }} to `/bin/zsh` with `usermod`
           ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_user_id }}
-          become: false
+          become: true
           changed_when: false
-
-    - name: Run SSSD role
-      include_role:
-        name: ansible-role-sssd
-      tags: [always, sssd]
 
   handlers:
     - name: Update grub
       ansible.builtin.command: update-grub
 
-    - name: Restart sshd
-      ansible.builtin.service:
-        name: "sshd"
-        enabled: yes
-        state: "restarted"
-        sleep: 5
-
-- name: Install osqueryd
-  import_playbook: ansible/playbooks/osquery/playbook.yml
-  vars:
-    fleet_login_cred: "{{ fleet_login_cred }}"
-    fleet_endpoint: "{{ fleet_endpoint }}"
+## osqueryd role
+- name: Osqueryd
+  hosts: all
+  become: true
   tags: [always, osquery, osqueryd]
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Run osquery role
+      include_role:
+        name: ansible-osquery
+
+## SSSD role
+- name: SSSD
+  hosts: all
+  become: true
+  tags: [always, sssd]
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Run SSSD role
+      include_role:
+        name: ansible-role-sssd
+
+## security hardening role
+- name: Security-hardening
+  hosts: all
+  become: true
+  tags: [always, security-hardening]
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Run security-hardening role
+      include_role:
+        name: ansible-role-security-hardening

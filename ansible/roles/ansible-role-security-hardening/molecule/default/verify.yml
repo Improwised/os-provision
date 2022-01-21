@@ -3,8 +3,25 @@
 
 - name: Verify
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+    - name: Verify sssd is running
+      ansible.builtin.service:
+        name: "sssd"
+        state: started
+        sleep: 5
+        delay: 10
+
+    - name: Verify sshd is running
+      ansible.builtin.service:
+        name: "sshd"
+        state: started
+        sleep: 5
+        delay: 10
+
+    - name: Verify fail2ban is running
+      ansible.builtin.service:
+        name: "fail2ban"
+        state: started
+        sleep: 5
+        delay: 10

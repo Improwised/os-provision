@@ -46,10 +46,24 @@ cd os-provision
 
 ### Ansible
 
+* Tags:
+
+  * `init`: (arch) Setting basic things like pacman parallel package download etc.
+
+  * `essential,devops,developer`: (arch) Installing tools for respective profile. you can found list of tools under `ansible/tasks/tools/`
+
+  * `sssd`: setting up sssd
+
+  * `security-hardening`: setting up security-hardening like sshd rules, fail2ban
+
+  * `osqueryd`/`osquery`: setting up osquery daemon
+
+> > **Specify tags that you don't want to execute in `ANSIBLE_SKIP_TAGS`**
+
 ```shell
 ## Running in local
 ## Exclude devops, developer tools, 'pacman -Syu', sssd, osqueryd
-ANSIBLE_SKIP_TAGS='devops,developer,syu,sssd' ansible-playbook -i 127.0.0.1, --connection=local --limit 127.0.0.1 playbook.yml --connection=local -K -vvv
+ANSIBLE_SKIP_TAGS='syu,devops,developer,security-hardening,sssd' ansible-playbook -i 127.0.0.1, --connection=local --limit 127.0.0.1 playbook.yml --connection=local -K -vvv
 ```
 
 Root user `sensei`:`6JHnhVpRm7v8jjoCavryqSdGNAAJB2tn`:`$6$iaRpHufUmAJq0oT9$0sPOKtPZ264WiWrnDmClyRW5W/a03hpQVIhzXwSChKYZ/Tim2IEjsWehPYsLjg.QwKcENmCHVgB3UHd29Hd4R0`

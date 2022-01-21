@@ -11,10 +11,7 @@ Group=root
 EnvironmentFile={{ fleet_secret_env_file }}
 ExecStop=kill -SIGTERM $MAINPID
 ExecStart={{ osqueryd_path | regex_replace('\\/$', '') }}/osqueryd \
-  --flagfile={{ osqueryd_flags_file }}\
-  --host_identifier={{ ansible_hostname }} \
-  --tls_hostname={{ fleet_endpoint }} \
-  --enroll_secret_env=ENROLL_SECRET
+  --flagfile={{ osqueryd_flags_file }}
 
 [Install]
 WantedBy=multi-user.target

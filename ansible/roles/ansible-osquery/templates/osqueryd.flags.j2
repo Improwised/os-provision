@@ -1,0 +1,7 @@
+--host_identifier={{ ansible_hostname }}
+--tls_hostname={{ fleet_endpoint }}
+--enroll_secret_env=ENROLL_SECRET
+{% for key in osqueryd_flags.keys() %}
+--{{ key }}={{ osqueryd_flags[key] }}
+{% endfor %}
+--force

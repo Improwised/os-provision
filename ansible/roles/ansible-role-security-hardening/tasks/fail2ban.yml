@@ -1,12 +1,12 @@
 ---
-- name: fail2ban - install fail2ban package (Archlinux)
+- name: fail2ban - install fail2ban package ({{ansible_os_family}})
   community.general.pacman:
     name: "{{ fail2ban_dependencies }}"
     update_cache: yes
     state: present
   when: ansible_os_family == 'Archlinux'
 
-- name: fail2ban - install fail2ban package
+- name: fail2ban - install fail2ban package ({{ansible_os_family}})
   apt:
     name: "{{ fail2ban_dependencies }}"
     update_cache: yes

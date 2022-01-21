@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  tasks:
+    - name: "Include ansible-osquery"
+      include_role:
+        name: "ansible-osquery"
