@@ -1,4 +1,4 @@
-ansible_args = ["-vvv", "--skip-tags=sssd", "-e fleet_login_cred=#{ENV['FLEET_LOGIN_CRED']}"]
+ansible_args = ["-v", "--skip-tags=sssd", "-e fleet_login_cred=#{ENV['FLEET_LOGIN_CRED']}"]
 
 Vagrant.configure("2") do |config|
   config.vm.box = "archlinux/archlinux"
