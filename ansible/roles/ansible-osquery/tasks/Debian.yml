@@ -4,7 +4,7 @@
   failed_when: osquery_check_deb.rc > 1
   changed_when: osquery_check_deb.rc == 1
 
-- name : Install a .deb package from the internet
+- name: Install a .deb package from the internet
   apt:
     deb: "{{ osqueryd_deb }}"
   when: osquery_check_deb.rc == 1
