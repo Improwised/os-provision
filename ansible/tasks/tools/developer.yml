@@ -1,12 +1,12 @@
 developer_pacman:
   [
+    dbeaver,
     docker,
     docker-compose,
-    dbeaver,
     ngrok,
   ]
 
-developer_yay:
+developer_aur:
   [
     nuspell,
   ]

@@ -1,9 +1,9 @@
 essential_pacman:
   [
-    jq,
     alacritty,
     baobab,
     base-devel,
+    bind,
     docker,
     docker-compose,
     fakeroot,
@@ -14,31 +14,32 @@ essential_pacman:
     git,
     gitui,
     htop,
+    htop,
+    iputils,
+    jq,
+    kitty,
     m4,
     make,
     nethogs,
     openssh,
+    osquery=5.0.1,
     patch,
     peek,
+    python,
+    python-pip,
     samba,
     simple-scan,
     synapse,
     tk,
+    tree,
+    ufw,
     vim,
     vlc,
     xclip,
     zsh,
-    htop,
-    python,
-    python-pip,
-    tree,
-    ufw,
-    osquery=5.0.1,
-    iputils, ## for ping
-    bind, ## For dig
   ]
 
-essential_yay:
+essential_aur:
   [
     brother-mfc-7860dw,
     brscan4,

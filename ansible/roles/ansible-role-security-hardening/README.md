@@ -12,13 +12,13 @@ Available variables are listed below, (see defaults/main.yml for default values)
 
 ### SSHD
 
-```security_ssh_enabled: no```
+```security_ssh_enabled: yes```
 
-Enable SSHD service (default "restarted")
+Enable SSHD service
 
 ```ssh_restart_handler_state: restarted```
 
-state of the SSHD
+state of the SSHD (default "restarted")
 
 ```security_ssh_port: 22```
 

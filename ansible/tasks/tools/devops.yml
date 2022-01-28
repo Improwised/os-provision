@@ -1,25 +1,25 @@
 devops_pacman:
   [
-    helm,
-    doctl,
-    openldap,
     ansible,
+    aws-cli,
+    doctl,
     epiphany,
-    tree,
+    epiphany,
+    helm,
+    openldap,
     podman,
     skopeo,
-    aws-cli,
     terraform,
-    epiphany, ## for accessing non HSTS
+    tree,
   ]
 
-devops_yay:
+devops_aur:
   [
-    k9s,
-    dive,
     concourse-fly-bin,
+    dive,
     fluxctl,
-    google-cloud-sdk,
-    lazydocker-bin,
     github-cli,
+    google-cloud-sdk,
+    k9s,
+    lazydocker-bin,
   ]

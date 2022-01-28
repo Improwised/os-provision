@@ -1,0 +1,42 @@
+- name: Create root user without home
+  user:
+    name: "{{ root_username }}"
+    password: "{{ root_password }}"
+    shell: /bin/nologin
+    group: root
+    create_home: no
+    state: present
+
+- name: Copy sshkey
+  ansible.builtin.copy:
+    dest: "/etc/ssh/authorized_keys_{{ root_username }}"
+    content: |
+      {{ root_pub_key }}
+    owner: "{{ root_username }}"
+    group: "root"
+    mode: 0644
+
+- name: Configure sshd for {{ root_username }}
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ root_username }}"
+    validate: sshd -T -f %s
+    backup: yes
+    block: |
+      Match User {{ root_username }}
+        AuthorizedKeysFile  /etc/ssh/authorized_keys_%u
+  notify:
+    - Restart sshd
+
+- name: Create the `aur_builder` user
+  ansible.builtin.user:
+    name: aur_builder
+    create_home: yes
+    group: wheel
+
+- name: Allow the `aur_builder` user to run `sudo pacman` without a password
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/11-install-aur_builder
+    line: "aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+    create: yes
+    validate: "visudo -cf %s"

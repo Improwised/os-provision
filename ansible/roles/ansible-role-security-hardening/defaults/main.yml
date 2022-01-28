@@ -3,10 +3,10 @@
 timezone: Asia/Kolkata
 
 ## SSHD
-security_ssh_enabled: no
+security_ssh_enabled: yes
 ssh_restart_handler_state: restarted
 security_ssh_port: 22
-security_ssh_usedns: no
+security_ssh_usedns: yes
 security_ssh_pubkey_auth: yes
 security_ssh_x11_forwarding: no
 security_ssh_permit_root_login: no

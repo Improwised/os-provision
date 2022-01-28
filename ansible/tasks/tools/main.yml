@@ -1,7 +1,7 @@
 - name: Create facts of tool list
   set_fact:
-    pacman: [yay]
-    yay: []
+    pacman: []
+    aur: []
   tags: [always]
 
 - block:
@@ -12,9 +12,9 @@
       set_fact:
         pacman: "{{ pacman + essential_pacman }}"
 
-    - name: (yay) Append Essential tool list
+    - name: (aur) Append Essential tool list
       set_fact:
-        yay: "{{ yay + essential_yay }}"
+        aur: "{{ aur + essential_aur }}"
   tags: [always, essential]
 
 - block:
@@ -25,9 +25,9 @@
       set_fact:
         pacman: "{{ pacman + devops_pacman }}"
 
-    - name: (yay) Append DevOps tool list
+    - name: (aur) Append DevOps tool list
       set_fact:
-        yay: "{{ yay + devops_yay }}"
+        aur: "{{ aur + devops_aur }}"
   tags: [devops]
 
 - block:
@@ -38,7 +38,7 @@
       set_fact:
         pacman: "{{ pacman + developer_pacman }}"
 
-    - name: (yay) Append developer tool list
+    - name: (aur) Append developer tool list
       set_fact:
-        yay: "{{ yay + developer_yay }}"
+        aur: "{{ aur + developer_aur }}"
   tags: [developer]

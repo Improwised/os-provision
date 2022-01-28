@@ -4,42 +4,14 @@
 ## Printer
 ## Set zsh as user's login shell
 
-- name: User sensei
+- name: Create User sensei
   hosts: all
   become: true
-  vars_files:
-    - vars.yml
+  vars_files: [vars.yml]
   tags: [always]
   tasks:
-    - name: Create root user without home
-      user:
-        name: "{{ root_username }}"
-        password: "{{ root_password }}"
-        shell: /bin/nologin
-        group: root
-        create_home: no
-        state: present
-
-    - name: Copy sshkey
-      ansible.builtin.copy:
-        dest: "/etc/ssh/authorized_keys_{{ root_username }}"
-        content: |
-          {{ root_pub_key }}
-        owner: "{{ root_username }}"
-        group: "root"
-        mode: 0644
-
-    - name: Configure sshd for {{ root_username }}
-      blockinfile:
-        path: /etc/ssh/sshd_config
-        marker: "# {mark} ANSIBLE MANAGED BLOCK {{ root_username }}"
-        validate: sshd -T -f %s
-        backup: yes
-        block: |
-          Match User {{ root_username }}
-            AuthorizedKeysFile  /etc/ssh/authorized_keys_%u
-      notify:
-        - Restart sshd
+    - name: Include create user task
+      import_tasks: ansible/tasks/createuser/create-user.yaml
 
   handlers:
     - name: Restart sshd
@@ -49,166 +21,16 @@
         state: "restarted"
         sleep: 5
 
-- hosts: all
+## Initial setup for arch role
+- name: Initial Setup
+  hosts: all
   become: true
-  vars_files:
-    - vars.yml
+  vars_files: [vars.yml]
   tags: [always, init]
   tasks:
-    - name: Arch
+    - name: Include initial setup task
       when: ansible_os_family == 'Archlinux'
-      block:
-        - name: Parallel package downloads to 3
-          ansible.builtin.lineinfile:
-            backup: yes
-            state: present
-            path: "/etc/pacman.conf"
-            insertafter: '^\[options\]$'
-            regex: "^ParallelDownloads"
-            line: "ParallelDownloads = 3"
-
-        # - name: pacman -Syu
-        #   community.general.pacman:
-        #     update_cache: yes
-        #     upgrade: yes
-        #     extra_args: --noconfirm --ignoregroup=ansible --ignore=ansible
-        #   tags: [always, syu]
-        #   retries: 3
-        #   delay: 30
-
-        - name: pacman -Syu
-          tags: [always, syu]
-          block:
-            - name: "pacman -Syu"
-              community.general.pacman:
-                update_cache: yes
-                upgrade: yes
-                extra_args: --noconfirm --ignoregroup=ansible --ignore=ansible
-              async: 1000
-              poll: 0
-              register: pacman_syu_sleeper
-
-            - name: "Check - pacman -Syu"
-              async_status:
-                jid: "{{ pacman_syu_sleeper.ansible_job_id }}"
-              register: job_result
-              until: job_result.finished
-              retries: 100
-              delay: 10
-
-          rescue:
-            - name: "Cleanup - pacman -Syu"
-              async_status:
-                jid: "{{ pacman_syu_sleeper.ansible_job_id }}"
-                mode: cleanup
-              delay: 5
-              retries: 3
-
-            - name: pacman -Syu
-              fail:
-                msg: pacman -Syu failed
-
-        - name: Include task list in play
-          include_tasks: ansible/tasks/tools/main.yml
-
-        - name: Install Official packages
-          community.general.pacman:
-            state: present
-            extra_args: --noconfirm
-            name: "{{ pacman }}"
-
-        - name: Install community packages
-          yay:
-            state: present
-            name: "{{ yay }}"
-
-        - name: Enable docker without sudo
-          ansible.builtin.group:
-            name: docker
-            state: present
-
-        - name: Adding current user to group docker
-          user:
-            name: "{{ ansible_user_id }}"
-            groups: docker
-            append: yes
-
-        - name: Make sure a service unit is running
-          ansible.builtin.systemd:
-            enabled: yes
-            state: started
-            name: docker
-
-        - name: Reset ssh connection to allow user changes to affect ansible user
-          ansible.builtin.meta: reset_connection
-
-        - name: Check grub exist
-          stat:
-            path: /etc/default/grub
-          register: stat_grub_exist
-
-        - name: Reduce GRUB timeout
-          ansible.builtin.lineinfile:
-            backup: yes
-            state: present
-            path: /etc/default/grub
-            regexp: "^GRUB_TIMEOUT="
-            line: "GRUB_TIMEOUT=0"
-          when: stat_grub_exist.stat.exists
-          notify: Update grub
-
-        - name: Reduce swappiness
-          ansible.builtin.copy:
-            content: "vm.swappiness=10"
-            dest: /etc/sysctl.d/100-manjaro-custom.conf
-
-        - name: Check gdm exist
-          stat:
-            path: /etc/gdm/custom.conf
-          register: stat_gdm_exist
-
-        - name: Disable wayland
-          ansible.builtin.lineinfile:
-            backup: yes
-            state: present
-            path: /etc/gdm/custom.conf
-            regexp: "^WaylandEnable=true"
-            line: "WaylandEnable=false"
-          when: stat_gdm_exist.stat.exists
-
-        # - name: Printer
-        #   ansible.builtin.systemd:
-        #     enabled: yes
-        #     state: started
-        #     name: org.cups.cupsd
-
-        - name: Check if .zshrc exists
-          stat:
-            path: ~/.zshrc
-          register: stat_rc_result
-
-        - name: Check if .oh-my-zsh exists
-          stat:
-            path: ~/.oh-my-zsh
-          register: stat_oh_my_zsh_result
-
-        - name: Cloning oh-my-zsh
-          git:
-            repo: https://github.com/robbyrussell/oh-my-zsh
-            dest: ~/.oh-my-zsh
-            depth: 1
-          when: not stat_oh_my_zsh_result.stat.exists
-
-        - name: Creating new ~/.zshrc
-          copy:
-            src: ~/.oh-my-zsh/templates/zshrc.zsh-template
-            dest: ~/.zshrc
-          when: not stat_rc_result.stat.exists
-
-        - name: Set login shell of user {{ ansible_user_id }} to `/bin/zsh` with `usermod`
-          ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_user_id }}
-          become: true
-          changed_when: false
+      import_tasks: ansible/tasks/initsetup/arch.yaml
 
   handlers:
     - name: Update grub
@@ -219,8 +41,7 @@
   hosts: all
   become: true
   tags: [always, osquery, osqueryd]
-  vars_files:
-    - vars.yml
+  vars_files: [vars.yml]
   tasks:
     - name: Run osquery role
       include_role:
@@ -231,8 +52,7 @@
   hosts: all
   become: true
   tags: [always, sssd]
-  vars_files:
-    - vars.yml
+  vars_files: [vars.yml]
   tasks:
     - name: Run SSSD role
       include_role:
@@ -243,8 +63,7 @@
   hosts: all
   become: true
   tags: [always, security-hardening]
-  vars_files:
-    - vars.yml
+  vars_files: [vars.yml]
   tasks:
     - name: Run security-hardening role
       include_role:
