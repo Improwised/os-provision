@@ -10,7 +10,7 @@ User=root
 Group=root
 EnvironmentFile={{ fleet_secret_env_file }}
 ExecStop=kill -SIGTERM $MAINPID
-ExecStart={{ osqueryd_path | regex_replace('\\/$', '') }}/osqueryd \
+ExecStart={{ osqueryd_path.stdout }} \
   --flagfile={{ osqueryd_flags_file }}
 
 [Install]

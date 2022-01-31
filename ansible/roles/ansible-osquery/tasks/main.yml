@@ -10,6 +10,14 @@
     mode: 0644
     group: root
 
+- name: Find Osqueryd path for service
+  ansible.builtin.shell: command -v osqueryd
+  args:
+    executable: /bin/bash
+  register: osqueryd_path
+  failed_when: osqueryd_path.rc > 1
+  changed_when: false
+
 - name: Stat env file
   stat:
     path: /etc/osquery/osqueryd_env.conf

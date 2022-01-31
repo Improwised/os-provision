@@ -3,11 +3,13 @@
 ## Else bearer is default auth mechanism
 # fleet_login_cred: username:pass
 ## Defaults
+osqueryd_version: 5.0.1
+osqueryd_deb: https://pkg.osquery.io/deb/osquery_{{ osqueryd_version }}-1.linux_amd64.deb
+
 fleet_secret_env_file: /etc/osquery/osqueryd_env.conf
-osqueryd_deb: https://pkg.osquery.io/deb/osquery_5.1.0-1.linux_amd64.deb
-osqueryd_path: /usr/bin/
 osqueryd_conf_file: /etc/osquery/osquery.conf
 osqueryd_flags_file: /etc/osquery/osquery.flags
+
 osqueryd_flags:
   logger_plugin: tls
   config_plugin: tls
@@ -22,6 +24,8 @@ osqueryd_flags:
   config_tls_endpoint: /api/v1/osquery/config
   distributed_tls_read_endpoint: /api/v1/osquery/distributed/read
   distributed_tls_write_endpoint: /api/v1/osquery/distributed/write
+  force: FLAG
+
 osqueryd_conf:
   options:
     config_plugin: filesystem

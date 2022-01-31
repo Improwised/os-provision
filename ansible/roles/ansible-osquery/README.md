@@ -1,38 +1,87 @@
-Role Name
-=========
+# Role Name
 
-A brief description of the role goes here.
+Ansible role to provision [osquery](https://github.com/osquery/osquery) daemon
+for [fleetmd](https://github.com/fleetdm/fleet)
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Ansible >2.12.1
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Available variables are listed below, along with default values
+(see defaults/main.yaml):
 
-Dependencies
-------------
+`osqueryd_version`: Osquery version `5.0.1` (default)
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+`osqueryd_deb`: Osquery package download path for debian systems
+`https://pkg.osquery.io/deb/osquery_{{ osqueryd_version }}-1.linux_amd64.deb`
+(default)
 
-Example Playbook
-----------------
+`fleet_secret_env_file`: Path of entroll secret get stored
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+`/etc/osquery/osqueryd_env.conf` (default)
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+`osqueryd_flags_file`: Osqueryd flags file path `/etc/osquery/osquery.flags`
+(default)
+`osqueryd_conf_file`: Osqueryd config file path `/etc/osquery/osquery.conf`
+(default)
 
-License
--------
+`osqueryd_flags`:  Osqueryd flags in yaml format
 
-BSD
+```yaml
+osqueryd_flags:
+  logger_plugin: tls
+  config_refresh: 10
+  force: FLAG
+```
 
-Author Information
-------------------
+...Will render at `osqueryd_flags_file` as...
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```conf
+--logger_plugin=tls
+--config_refresh: 10
+--force
+```
+
+> `FLAG` is special *value* that will make *key* as flag
+
+`osqueryd_conf_file`: Osqueryd config file path `/etc/osquery/osquery.conf`
+(default)
+
+`osqueryd_conf`: YAML formatted Osqueryd config that will reanders as json
+at `osqueryd_conf_file`
+
+## Example Playbook
+
+```yaml
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: "Provision SSSD"
+      include_role:
+        name: "ansible-role-sssd"
+
+```
+
+## TODO
+
+- [ ] molecule testing
+
+<!--
+## Testing
+
+- `molecule --all --parallel`
+
+### Requirements
+
+- Vagrant >2.2.18
+- molecule >3.5.2
+  - vagrant:0.6.3 from molecule_vagrant
+  -
+-->
+
+## License
+
+MIT

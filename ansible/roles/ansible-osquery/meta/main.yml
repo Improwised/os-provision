@@ -1,5 +1,5 @@
 galaxy_info:
-  role-name: ansible-osquery
+  role-name: ansible_osquery
   author: Pratik Balar <pratik@improwised.com>
   description: Setup osqueyd in debina and arch with fleet
   company: Improwised
