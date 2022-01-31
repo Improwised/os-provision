@@ -10,7 +10,7 @@
   args:
     executable: /bin/bash
   register: paru_exist
-  failed_when: false
+  failed_when: paru_exist.rc > 1
   changed_when: paru_exist.rc > 0
 
 - name: Set paru as aur helper
@@ -23,7 +23,7 @@
   args:
     executable: /bin/bash
   register: yay_exist
-  failed_when: false
+  failed_when: yay_exist.rc > 1
   changed_when: yay_exist.rc > 0
   when: paru_exist.rc > 0
 
