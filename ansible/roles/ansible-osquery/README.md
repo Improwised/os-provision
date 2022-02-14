@@ -52,19 +52,6 @@ osqueryd_flags:
 `osqueryd_conf`: YAML formatted Osqueryd config that will reanders as json
 at `osqueryd_conf_file`
 
-## Example Playbook
-
-```yaml
----
-- hosts: all
-  become: yes
-  tasks:
-    - name: "Provision SSSD"
-      include_role:
-        name: "ansible-role-sssd"
-
-```
-
 ## TODO
 
 - [ ] molecule testing
