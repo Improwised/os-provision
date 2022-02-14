@@ -1,0 +1,56 @@
+---
+- name: ufw - Install ufw package (Archlinux)
+  community.general.pacman:
+    name: "{{ ufw_dependencies }}"
+    update_cache: yes
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: ufw - Install ufw package
+  apt:
+    name: "{{ ufw_dependencies }}"
+    update_cache: yes
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: ufw - Configure
+  become: true
+  become_user: root
+  notify: reload ufw
+  block:
+    - name: ufw - configure rules
+      community.general.ufw:
+        rule: "{{ item.rule }}"
+        interface: "{{ item.interface | default('') }}"
+        direction: "{{ item.direction | default('in') }}"
+        from_ip: "{{ item.from_ip | default('any') }}"
+        to_ip: "{{ item.to_ip | default('any') }}"
+        from_port: "{{ item.from_port | default('') }}"
+        to_port: "{{ item.to_port | default('') }}"
+        protocol: "{{ item.protocol | default('any') }}"
+        route: "{{ item.route | default(omit) }}"
+        log: "{{ item.log | default(false) }}"
+        comment: "{{ item.comment | default(omit) }}"
+      with_items: "{{ ufw_rules }}"
+
+    - name: ufw - default allow outgoing
+      community.general.ufw:
+        state: enabled
+        policy: allow
+        direction: outgoing
+      when: ufw_default_allow_outgoing|bool
+
+    - name: ufw - default deny incoming
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+      when: ufw_default_deny_incoming|bool
+
+    - name: ufw - configure logging
+      community.general.ufw:
+        logging: "{{ ufw_logging }}"
+
+- name: start and enable service
+  community.general.ufw:
+    state: enabled

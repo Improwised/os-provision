@@ -1,0 +1,33 @@
+---
+- name: fail2ban - install fail2ban package ({{ansible_os_family}})
+  community.general.pacman:
+    name: "{{ fail2ban_dependencies }}"
+    update_cache: yes
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: fail2ban - install fail2ban package ({{ansible_os_family}})
+  apt:
+    name: "{{ fail2ban_dependencies }}"
+    update_cache: yes
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: fail2ban - configure fail2ban
+  notify: restart fail2ban
+  block:
+    - name: fail2ban - /etc/fail2ban/fail2ban.local
+      template:
+        src: fail2ban.local.j2
+        dest: /etc/fail2ban/fail2ban.local
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: fail2ban - /etc/fail2ban/jail.local
+      template:
+        src: jail.local.j2
+        dest: /etc/fail2ban/jail.local
+        owner: root
+        group: root
+        mode: 0644

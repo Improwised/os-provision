@@ -1,0 +1,15 @@
+# handlers file
+---
+- name: restart fail2ban
+  ansible.builtin.service:
+    name: "fail2ban"
+    state: "{{ fail2ban_restart_handler_state }}"
+
+- name: restart ssh
+  ansible.builtin.service:
+    name: "sshd"
+    state: "{{ ssh_restart_handler_state }}"
+
+- name: reload ufw
+  community.general.ufw:
+    state: reloaded

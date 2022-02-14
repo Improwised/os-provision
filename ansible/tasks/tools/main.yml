@@ -1,0 +1,44 @@
+- name: Create facts of tool list
+  set_fact:
+    pacman: []
+    aur: []
+  tags: [always]
+
+- block:
+    - name: Include Essential tool list
+      include_vars: essential.yml
+
+    - name: Append Essential tool list
+      set_fact:
+        pacman: "{{ pacman + essential_pacman }}"
+
+    - name: (aur) Append Essential tool list
+      set_fact:
+        aur: "{{ aur + essential_aur }}"
+  tags: [always, essential]
+
+- block:
+    - name: Include DevOps tool list
+      include_vars: devops.yml
+
+    - name: Append DevOps tool list
+      set_fact:
+        pacman: "{{ pacman + devops_pacman }}"
+
+    - name: (aur) Append DevOps tool list
+      set_fact:
+        aur: "{{ aur + devops_aur }}"
+  tags: [devops]
+
+- block:
+    - name: Include developer tool list
+      include_vars: developer.yml
+
+    - name: Append developer tool list
+      set_fact:
+        pacman: "{{ pacman + developer_pacman }}"
+
+    - name: (aur) Append developer tool list
+      set_fact:
+        aur: "{{ aur + developer_aur }}"
+  tags: [developer]

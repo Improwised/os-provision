@@ -1,0 +1,31 @@
+---
+- name: sshd - update SSH configuration to be more secure.
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: 'sshd -T -f %s'
+    mode: 0644
+  with_items:
+    - regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication {{ yes if security_ssh_password_authentication|bool == 'True' else 'no' }}"
+    - regexp: "^PermitRootLogin"
+      line: "PermitRootLogin {{ yes if security_ssh_permit_root_login|bool == 'True' else 'no' }}"
+    - regexp: "^(Port|#Port)"
+      line: "Port {{ security_ssh_port }}"
+    - regexp: "^(UseDNS|#UseDNS)"
+      line: "UseDNS {{ yes if security_ssh_usedns|bool == 'True' else 'no' }}"
+    - regexp: "^PermitEmptyPasswords"
+      line: "PermitEmptyPasswords {{ yes if security_ssh_permit_empty_password|bool == 'True' else 'no' }}"
+    - regexp: "^ChallengeResponseAuthentication"
+      line: "ChallengeResponseAuthentication {{ yes if security_ssh_challenge_response_auth|bool == 'True' else 'no' }}"
+    - regexp: "^GSSAPIAuthentication"
+      line: "GSSAPIAuthentication {{ yes if security_ssh_gss_api_authentication|bool == 'True' else 'no' }}"
+    - regexp: "^X11Forwarding"
+      line: "X11Forwarding {{ yes if security_ssh_x11_forwarding|bool == 'True' else 'no' }}"
+    # - regexp: "^PubkeyAuthentication"
+    #   line: "PubkeyAuthentication {{ yes if security_ssh_pubkey_auth|bool == 'True' else 'no' }}"
+    - regexp: "^#AuthorizedKeysFile"
+      line: "AuthorizedKeysFile	.ssh/authorized_keys"
+  notify: restart ssh

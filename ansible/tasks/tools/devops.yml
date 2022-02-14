@@ -1,0 +1,25 @@
+devops_pacman:
+  [
+    ansible,
+    aws-cli,
+    doctl,
+    epiphany,
+    epiphany,
+    helm,
+    openldap,
+    podman,
+    skopeo,
+    terraform,
+    tree,
+  ]
+
+devops_aur:
+  [
+    concourse-fly-bin,
+    dive,
+    fluxctl,
+    github-cli,
+    google-cloud-sdk,
+    k9s,
+    lazydocker-bin,
+  ]

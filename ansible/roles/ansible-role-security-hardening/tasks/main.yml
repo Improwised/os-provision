@@ -1,0 +1,26 @@
+---
+# Variable configuration.
+- name: Include OS-specific variables (Arch).
+  include_vars: "{{ ansible_distribution|lower }}.yml"
+  when: ansible_distribution == 'Archlinux'
+
+- name: Include OS-specific variables (Debian).
+  include_vars: "{{ ansible_distribution|lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  when: ansible_os_family == 'Debian'
+
+# Other
+- name: timezone - set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+# SSH
+- include_tasks: ssh.yml
+  when: security_ssh_enabled | bool
+
+# Fail2Ban
+- include_tasks: fail2ban.yml
+  when: security_fail2ban_enabled | bool
+
+# UFW
+- include_tasks: ufw.yml
+  when: security_ufw_enabled | bool
