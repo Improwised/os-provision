@@ -31,7 +31,7 @@ domain/IMPROWISED:
   debug_level: 5
 ```
 
-this will convert as `sssd.conf`
+...will convert at `sssd.conf` as
 
 ```conf
 [sssd]

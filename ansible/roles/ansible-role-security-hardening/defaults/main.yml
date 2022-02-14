@@ -45,7 +45,7 @@ fail2ban_ignoreips:
 
 ## UFW - https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html
 security_ufw_enabled: no
-ufw_default_deny_incoming: no
+ufw_default_deny_incoming: yes
 ufw_default_allow_outgoing: yes
 ufw_logging: "off"
 ufw_rules:

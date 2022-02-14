@@ -39,7 +39,7 @@ wget https://raw.githubusercontent.com/Improwised/os-provision/master/install.sh
 or
 
 ```shell
-git clone https://github.com/improwised/os-provision.git
+git clone --recursive https://github.com/improwised/os-provision.git
 cd os-provision
 ./install.sh
 ```
