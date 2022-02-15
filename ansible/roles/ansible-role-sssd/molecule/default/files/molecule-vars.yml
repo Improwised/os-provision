@@ -21,7 +21,7 @@ sssd_config:
     access_provider: ldap
     ldap_uri: ldaps://directory.improwised.com
     ldap_search_base: dc=improwised,dc=com
-    ldap_default_bind_dn: uid=serviceuser,cn=svcaccts,dc=improwised,dc=com
+    ldap_default_bind_dn: uid=sssd,cn=svcaccts,dc=improwised,dc=com
     ldap_group_search_base: cn=groups,dc=improwised,dc=com
     ldap_default_authtok_type: password
     ldap_default_authtok: "{{ ldap_password }}"
