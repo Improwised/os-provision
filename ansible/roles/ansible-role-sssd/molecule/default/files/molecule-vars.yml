@@ -4,6 +4,7 @@ sssd_restarted_state: "restarted"
 sshd_restarted_state: "restarted"
 
 sudoers_allowed_groups: 1001
+ldap_password: ''
 
 sssd_config:
   sssd:
@@ -23,7 +24,7 @@ sssd_config:
     ldap_default_bind_dn: uid=serviceuser,cn=svcaccts,dc=improwised,dc=com
     ldap_group_search_base: cn=groups,dc=improwised,dc=com
     ldap_default_authtok_type: password
-    ldap_default_authtok: HF4tinWjn4Yh9DiJ
+    ldap_default_authtok: "{{ ldap_password }}"
     sudo_provider: none
     entry_cache_timeout: 1
     ldap_schema: rfc2307

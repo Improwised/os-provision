@@ -18,6 +18,8 @@ Available variables are listed below, along with default values (see defaults/ma
 
 `sshd_sss_config_enable`: enable sssd based ssh login (default "no")
 
+`ldap_password`: ldap server password (required)
+
 `sssd_config`: `yaml` based SSSD config, example below
 
 ```yaml
