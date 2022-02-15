@@ -12,6 +12,16 @@ for [fleetmd](https://github.com/fleetdm/fleet)
 Available variables are listed below, along with default values
 (see defaults/main.yaml):
 
+`fleet_login_cred`: fleet credentials to generate and push osqueyrd stats key
+
+If you want to use password
+
+`fleet_login_cred`: `<USERNAME>:<PASSWORD>`
+
+Else bearer token auth mechanism
+
+`fleet_login_cred`: `<BEARER-TOKEN>`
+
 `osqueryd_version`: Osquery version `5.0.1` (default)
 
 `osqueryd_deb`: Osquery package download path for debian systems

@@ -1,5 +1,8 @@
 ---
 # tasks file for ansible-osquery
+- fail: msg="'fleet_login_cred' is empty/not defined"
+  when: (fleet_login_cred is defined) and (fleet_login_cred|length > 0)
+
 - name: Install osqueryd package
   include_tasks: "{{ ansible_os_family }}.yml"
 
