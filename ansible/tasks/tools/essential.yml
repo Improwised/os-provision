@@ -22,7 +22,7 @@ essential_pacman:
     make,
     nethogs,
     openssh,
-    osquery=5.0.1,
+    osquery,
     patch,
     peek,
     python,

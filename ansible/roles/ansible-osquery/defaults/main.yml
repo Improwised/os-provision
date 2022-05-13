@@ -1,6 +1,6 @@
 ---
 ## Defaults
-osqueryd_version: 5.0.1
+osqueryd_version: 5.2.2
 osqueryd_deb: https://pkg.osquery.io/deb/osquery_{{ osqueryd_version }}-1.linux_amd64.deb
 
 fleet_secret_env_file: /etc/osquery/osqueryd_env.conf
