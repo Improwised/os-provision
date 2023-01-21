@@ -17,13 +17,13 @@ sudo pacman -Syyu
 # latte-dock
 sudo pacman -S --noconfirm base-devel openssh tk nethogs docker docker-compose \
   alacritty dbeaver baobab simple-scan yay firefox htop peek flameshot vlc feh \
-  patch make fakeroot m4 nuspell xclip vim synapse samba fasd gitui
+  patch make fakeroot m4 nuspell xclip vim synapse samba fasd gitui libinput
 
 
 # Install community packages
 yay -S \
   brother-mfc-7860dw brscan4 concourse-fly-bin fluxctl-bin gitflow-avh google-chrome kubectl-bin peazip-qt-bin kde-servicemenus-peazip \
-  rslsync slack-desktop sublime-text-4 ttf-ms-fonts
+  rslsync slack-desktop sublime-text-4 ttf-ms-fonts ruby-fusuma
 
 # Install custom softwares
 
