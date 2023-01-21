@@ -17,7 +17,7 @@ sudo pacman -Syyu
 # latte-dock
 sudo pacman -S --noconfirm base-devel openssh tk nethogs docker docker-compose \
   alacritty dbeaver baobab simple-scan yay firefox htop peek flameshot vlc feh \
-  patch make fakeroot m4 nuspell xclip vim synapse samba fasd gitui libinput
+  patch make fakeroot m4 nuspell xclip vim synapse samba fasd gitui libinput xdotool
 
 
 # Install community packages
