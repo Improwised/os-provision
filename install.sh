@@ -18,12 +18,12 @@ sudo pacman -Syyu
 sudo pacman -S --noconfirm base-devel openssh tk nethogs docker docker-compose \
   alacritty dbeaver baobab simple-scan yay firefox htop peek flameshot vlc feh \
   patch make fakeroot m4 nuspell xclip vim synapse samba fasd gitui libinput xdotool \
-  tmux neovim
+  tmux neovim fluxctl-bin kubectl-bin
 
 
 # Install community packages
 yay -S \
-  brother-mfc-7860dw brscan4 concourse-fly-cli fluxctl-bin gitflow-avh google-chrome kubectl-bin peazip-qt-bin \
+  brother-mfc-7860dw brscan4 concourse-fly-cli gitflow-avh google-chrome peazip-qt-bin \
   rslsync slack-desktop sublime-text-4 ttf-ms-fonts ruby-fusuma nerd-fonts-gabmus
 
 # Install custom softwares
