@@ -1,0 +1,5 @@
+- name: (Arch) Install osquery packages
+  community.general.pacman:
+    state: present
+    extra_args: --noconfirm
+    name: osquery

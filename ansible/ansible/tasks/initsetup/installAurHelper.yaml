@@ -1,0 +1,59 @@
+- name: Set defaults
+  set_fact:
+    paru_exist:
+      rc: 99
+    yay_exist:
+      rc: 99
+
+- name: Check Aur helper paru exist
+  ansible.builtin.shell: command -v paru
+  args:
+    executable: /bin/bash
+  register: paru_exist
+  failed_when: paru_exist.rc > 1
+  changed_when: paru_exist.rc > 0
+
+- name: Set paru as aur helper
+  set_fact:
+    aur_helper: "paru"
+  when: paru_exist.rc == 0
+
+- name: Check Aur helper yay exist
+  ansible.builtin.shell: command -v yay
+  args:
+    executable: /bin/bash
+  register: yay_exist
+  failed_when: yay_exist.rc > 1
+  changed_when: yay_exist.rc > 0
+  when: paru_exist.rc > 0
+
+- name: Set yay as aur helper
+  set_fact:
+    aur_helper: "yay"
+  when:
+    - paru_exist.rc > 0
+    - yay_exist.rc == 0
+
+- name: Install paru
+  when:
+    - paru_exist.rc > 0
+    - yay_exist.rc > 0
+  block:
+    - name: Cloning paru
+      git:
+        repo: https://aur.archlinux.org/paru.git
+        dest: /tmp/paru
+        depth: 1
+
+    - name: Install paru
+      become: true
+      become_user: aur_builder
+      ansible.builtin.shell: makepkg -sicf --noconfirm
+      args:
+        chdir: /tmp/paru
+        creates: /usr/bin/paru
+        executable: /bin/bash
+
+    - name: Set paru as aur helper
+      set_fact:
+        aur_helper: "paru"

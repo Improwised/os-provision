@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  vars_files:
+  - files/molecule-vars.yaml
+  tasks:
+    - name: "Include ansible-role-sssd"
+      include_role:
+        name: "ansible-role-sssd"

@@ -1,0 +1,12 @@
+developer_pacman:
+  [
+    dbeaver,
+    docker,
+    docker-compose,
+    ngrok,
+  ]
+
+developer_aur:
+  [
+    nuspell,
+  ]

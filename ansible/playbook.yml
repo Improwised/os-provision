@@ -1,0 +1,128 @@
+## remain:
+## Pacman mirrors
+## Lable all tools
+## Printer
+## Set zsh as user's login shell
+
+# - name: Create User sensei
+#   hosts: all
+#   become: true
+#   vars_files: [vars.yml]
+#   tags: [always]
+#   tasks:
+#     - name: Include create user task
+#       import_tasks: ansible/tasks/createuser/create-user.yaml
+
+#   handlers:
+#     - name: Restart sshd
+#       ansible.builtin.service:
+#         name: "sshd"
+#         enabled: yes
+#         state: "restarted"
+#         sleep: 5
+- hosts: localhost
+  tasks:
+    - name: Check that the mirrorlist_bkp exists
+      tags: [mirror]
+      stat:
+        path: /etc/pacman.d/mirrorlist_bkp
+      register: stat_result
+    - name: mirorlist_bkp
+      tags: [mirror]
+      become: true
+      command: mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist_bkp
+      when: stat_result.stat.exists == False
+
+    - name: mirrorlist url added
+      tags: [mirror]
+      become: true
+      when: stat_result.stat.exists == False
+      copy:
+        dest: "/etc/pacman.d/mirrorlist"
+        content: |
+          ## Improwised Local Arch Main
+          Server = https://arch-mirror.pride.improwised.dev/$repo/os/$arch
+
+    - name: Check that the chaotic-mirrorlist_bkp exists
+      tags: [mirror]
+      stat:
+        path: /etc/pacman.d/chaotic-mirrorlist_bkp
+      register: stat_result
+    - name: chaotic-mirrorlist_bkp
+      tags: [mirror]
+      become: true
+      command: mv /etc/pacman.d/chaotic-mirrorlist /etc/pacman.d/chaotic-mirrorlist_bkp
+      when: stat_result.stat.exists == False
+
+    - name: chaotic-mirrorlist url added
+      tags: [mirror]
+      become: true
+      when: stat_result.stat.exists == False
+      copy:
+        dest: "/etc/pacman.d/chaotic-mirrorlist"
+        content: |
+          ## Improwised Local Arch Main
+          Server = https://arch-mirror.pride.improwised.dev/custom_repo/chaotic-aur/$repo/$arch
+
+
+## Initial setup for arch role
+- name: Initial Setup
+  hosts: all
+  become: true
+  vars_files: [vars.yml]
+  tags: [always, init]
+  tasks:
+    - name: Include initial setup task
+      when: ansible_os_family == 'Archlinux'
+      import_tasks: ansible/tasks/initsetup/arch.yaml
+
+  handlers:
+    - name: Update grub
+      ansible.builtin.command: update-grub
+## Free ipa Client configure
+- name: free ipa configure
+  hosts: all
+  tasks:
+  - name: freeipa install
+    become: true
+    tags: [ipa]
+    command: pamac install --no-confirm freeipa-client
+  - name: freeipa configure
+    become: true
+    tags: [ipac]
+    command: sudo ipa-client-install --hostname={{ ansible_hostname }}.pride.improwised.dev --mkhomedir --ntp-server=10.0.1.1 --ntp-server=ipa.improwised.com --ntp-server=time.cloudflare.com --domain=improwised.com -w  --principal  -U
+
+
+
+## osqueryd role
+- name: Osqueryd
+  hosts: all
+  become: true
+  tags: [always, osquery, osqueryd]
+  vars_files: [vars.yml]
+  tasks:
+    - name: Run osquery role
+      include_role:
+        name: ansible-osquery
+
+## SSSD role
+- name: SSSD
+  hosts: all
+  become: true
+  tags: [always, sssd]
+  vars_files: [vars.yml]
+  tasks:
+    - name: Run SSSD role
+      include_role:
+        name: ansible-role-sssd
+
+## security hardening role
+- name: Security-hardening
+  hosts: all
+  become: true
+  tags: [always, security-hardening]
+  vars_files: [vars.yml]
+  tasks:
+    - name: Run security-hardening role
+      include_role:
+        name: ansible-role-security-hardening

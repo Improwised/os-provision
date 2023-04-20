@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  remote_user: root
+  become: yes
+  become_user: root
+  vars:
+    testing: "true"
+  roles:
+    - ansible-role-sssd

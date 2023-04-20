@@ -1,0 +1,7 @@
+---
+# vars file for sssd
+sssd_packages:
+  - sssd
+  - nss-pam-ldapd
+  - openldap
+ldap_file: /etc/openldap/ldap.conf

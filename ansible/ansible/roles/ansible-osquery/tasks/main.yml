@@ -1,0 +1,157 @@
+---
+# tasks file for ansible-osquery
+- fail: msg="'fleet_login_cred' is empty/not defined"
+  when: (fleet_login_cred is defined) and (fleet_login_cred|length == 0)
+
+- name: Install osqueryd package
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Create osquery log dir if not exist
+  ansible.builtin.file:
+    path: /etc/osquery/
+    state: directory
+    mode: 0644
+    group: root
+
+- name: Find Osqueryd path for service
+  ansible.builtin.shell: command -v osqueryd
+  args:
+    executable: /bin/bash
+  register: osqueryd_path
+  failed_when: osqueryd_path.rc > 1
+  changed_when: false
+
+- name: Stat env file
+  stat:
+    path: /etc/osquery/osqueryd_env.conf
+  register: osqueryd_env_file
+
+- name: Create osquery log dir if not exist
+  ansible.builtin.file:
+    path: /var/log/osquery/
+    state: directory
+    mode: 0644
+    group: root
+
+- name: Hostname lenght
+  set_fact:
+    hostname_length_minus: "{{ 31 - ansible_hostname|length|int }}"
+  when: osqueryd_env_file.stat.exists is not true
+
+- name: Generate random stringjou
+  set_fact:
+    current_token: "{{ ansible_hostname }}-{{ query('community.general.random_string', length=hostname_length_minus, special=false, upper=false, lower=true, numbers=true)[0] }}"
+  when: osqueryd_env_file.stat.exists is not true
+
+- name: Request API through username/password
+  block:
+    - name: Login to {{ fleet_endpoint }} using {{ fleet_login_cred.split(":")[0] }} - ****
+      uri:
+        url: "https://{{ fleet_endpoint }}/api/v1/fleet/login"
+        method: POST
+        status_code: 200
+        body_format: json
+        body: |
+          {
+            "email": "{{ fleet_login_cred.split(":")[0] }}",
+            "password": "{{ fleet_login_cred.split(":")[1] }}"
+          }
+      register: login_info
+
+    - name: Set fleet_login_cred fact
+      set_fact:
+        fleet_bearer_token: "{{ login_info.json.token }}"
+
+    - name: Get Set token
+      include_tasks: getsettoken.yml
+
+    - name: Logout from {{ fleet_endpoint }}
+      uri:
+        url: https://{{ fleet_endpoint }}/api/v1/fleet/logout
+        method: POST
+        status_code: 200
+        body_format: json
+        headers:
+          Authorization: Bearer {{ login_info.json.token }}
+
+  when:
+    - fleet_login_cred is search(":")
+    - osqueryd_env_file.stat.exists is not true
+
+- name: Request API through username/password
+  block:
+    - name: Set fleet_login_cred fact
+      set_fact:
+        fleet_bearer_token: "{{ fleet_login_cred }}"
+
+    - name: Get Set token
+      include_tasks: getsettoken.yml
+  when:
+    - fleet_login_cred is not search(":")
+    - osqueryd_env_file.stat.exists is not true
+
+- name: Set osqueryd service
+  template:
+    src: "osqueryd.service.j2"
+    dest: "/etc/systemd/system/osqueryd.service"
+    group: root
+    mode: 0644
+  notify:
+    - Reload osqueryd
+
+- name: Set osqueryd flags
+  template:
+    src: "osqueryd.flags.j2"
+    dest: "{{ osqueryd_flags_file }}"
+    group: root
+    mode: 0644
+  notify:
+    - Restarted osqueryd
+
+- name: Copy osqueryd conf
+  ansible.builtin.copy:
+    content: |
+      {{ osqueryd_conf | to_json }}
+    dest: "{{ osqueryd_conf_file }}_bak"
+    group: root
+    mode: 0644
+
+- name: Stat remote osqueryd conf
+  stat:
+    path: "{{ osqueryd_conf_file }}"
+  register: osqueryd_remote_conf
+
+- name: Stat local(in remote) osqueryd conf
+  stat:
+    path: "{{ osqueryd_conf_file }}_bak"
+  register: osqueryd_local_conf
+
+- name: Stop osqueryd
+  ansible.builtin.service:
+    name: osqueryd.service
+    state: stopped
+  when: osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
+
+- name: Copy osqueryd conf
+  ansible.builtin.copy:
+    content: |
+      {{ osqueryd_conf | to_json }}
+    dest: "{{ osqueryd_conf_file }}"
+    group: root
+    mode: 0644
+  when: osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
+
+- name: Enable osqueryd
+  ansible.builtin.service:
+    name: osqueryd.service
+    state: started
+    enabled: yes
+
+- name: "{{ 'Start' if osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum else 'Restart' }} osqueryd"
+  ansible.builtin.service:
+    name: osqueryd.service
+    state: "{{ 'started' if osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum else 'restarted' }}"
+    enabled: yes
+  when:
+    - osqueryd_local_conf.stat.checksum != osqueryd_remote_conf.stat.checksum
+    - osqueryd_env_file.stat.exists is not true

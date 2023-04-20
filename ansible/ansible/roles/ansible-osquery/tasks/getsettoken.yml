@@ -1,0 +1,32 @@
+- name: Get existing tokens
+  uri:
+    url: "https://{{ fleet_endpoint }}/api/v1/fleet/spec/enroll_secret"
+    method: GET
+    return_content: yes
+    status_code: 200
+    body_format: json
+    headers:
+      Authorization: Bearer {{ fleet_bearer_token }}
+  register: existing_tokens
+
+- name: Generate response
+  set_fact:
+    secret_response: "{{ existing_tokens.json | combine ({'spec':{'secrets': [{'secret':current_token}]}},list_merge='append',recursive=True) }}"
+
+- name: Add new token
+  uri:
+    url: "https://{{ fleet_endpoint }}/api/v1/fleet/spec/enroll_secret"
+    method: POST
+    status_code: 200
+    body_format: json
+    headers:
+      Authorization: Bearer {{ fleet_bearer_token }}
+    body: "{{ secret_response }}"
+
+- name: Copy Secret to {{ fleet_secret_env_file }}
+  ansible.builtin.copy:
+    content: |
+      ENROLL_SECRET='{{ current_token }}'
+    dest: "{{ fleet_secret_env_file }}"
+    group: root
+    mode: 0600
