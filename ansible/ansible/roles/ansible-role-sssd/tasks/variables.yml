@@ -1,0 +1,12 @@
+---
+# Variable configuration.
+- fail: msg="'ldap_password' is empty/not defined"
+  when: (ldap_password is defined) and (ldap_password|length > 0)
+
+- name: Include OS-specific variables (Arch).
+  include_vars: "{{ ansible_distribution|lower }}.yml"
+  when: ansible_distribution == 'Archlinux'
+
+- name: Include OS-specific variables (Debian).
+  include_vars: "{{ ansible_distribution|lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  when: ansible_os_family == 'Debian'

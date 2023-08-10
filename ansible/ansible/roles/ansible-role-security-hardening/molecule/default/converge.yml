@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+    - name: "Include securityhardening"
+      include_role:
+        name: "ansible-role-security-hardening"

@@ -1,0 +1,13 @@
+---
+# handlers file for ansible-osquery
+- name: Reload osqueryd
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: osqueryd.service
+
+- name: Restarted osqueryd
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: no
+    name: osqueryd.service

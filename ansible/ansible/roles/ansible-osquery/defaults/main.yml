@@ -1,0 +1,323 @@
+---
+## Defaults
+#osqueryd_version: 5.4.0-1
+osqueryd_deb: https://pkg.osquery.io/deb/osquery_{{ osqueryd_version }}-1.linux_amd64.deb
+
+fleet_secret_env_file: /etc/osquery/osqueryd_env.conf
+osqueryd_conf_file: /etc/osquery/osquery.conf
+osqueryd_flags_file: /etc/osquery/osquery.flags
+
+osqueryd_flags:
+  logger_plugin: tls
+  config_plugin: tls
+  config_refresh: 10
+  logger_tls_period: 10
+  distributed_interval: 10
+  distributed_plugin: tls
+  disable_distributed: false
+  distributed_tls_max_attempts: 3
+  logger_tls_endpoint: /api/v1/osquery/log
+  enroll_tls_endpoint: /api/v1/osquery/enroll
+  config_tls_endpoint: /api/v1/osquery/config
+  distributed_tls_read_endpoint: /api/v1/osquery/distributed/read
+  distributed_tls_write_endpoint: /api/v1/osquery/distributed/write
+  force: FLAG
+
+osqueryd_conf:
+  options:
+    config_plugin: filesystem
+    logger_plugin: filesystem
+    utc: "true"
+  schedule:
+    system_info:
+      query: SELECT hostname, cpu_brand, physical_memory FROM system_info;
+      interval: 3600
+  file_paths:
+    homes:
+      - "/root/.ssh/%%"
+      - "/home/%/.ssh/%%"
+    binaries:
+      - "/usr/bin/%%"
+      - "/usr/sbin/%%"
+      - "/bin/%%"
+      - "/sbin/%%"
+      - "/usr/local/bin/%%"
+      - "/usr/local/sbin/%%"
+      - "/opt/bin/%%"
+      - "/opt/sbin/%%"
+    configuration:
+      - "/etc/%%"
+  exclude_paths:
+    homes:
+      - "/home/not_to_monitor/.ssh/%%"
+    tmp:
+      - "/tmp/too_many_events/"
+  decorators:
+    load:
+      - SELECT uuid AS host_uuid FROM system_info;
+      - SELECT user AS username FROM logged_in_users ORDER BY time DESC LIMIT 1;
+      - SELECT hostname AS hostname FROM system_info;
+  packs:
+    osquery-monitoring: "/usr/share/osquery/packs/osquery-monitoring.conf"
+    incident-response: "/usr/share/osquery/packs/incident-response.conf"
+    it-compliance: "/usr/share/osquery/packs/it-compliance.conf"
+    vuln-management: "/usr/share/osquery/packs/vuln-management.conf"
+    hardware-monitoring: "/usr/share/osquery/packs/hardware-monitoring.conf"
+    ossec-rootkit: "/usr/share/osquery/packs/ossec-rootkit.conf"
+  feature_vectors:
+    character_frequencies:
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0.00045
+      - 0.01798
+      - 0
+      - 0.03111
+      - 0.00063
+      - 0.00027
+      - 0
+      - 0.01336
+      - 0.0133
+      - 0.00128
+      - 0.0027
+      - 0.00655
+      - 0.01932
+      - 0.01917
+      - 0.00432
+      - 0.0045
+      - 0.00316
+      - 0.00245
+      - 0.00133
+      - 0.001029
+      - 0.00114
+      - 0.000869
+      - 0.00067
+      - 0.000759
+      - 0.00061
+      - 0.00483
+      - 0.0023
+      - 0.00185
+      - 0.01342
+      - 0.00196
+      - 0.00035
+      - 0.00092
+      - 0.027875
+      - 0.007465
+      - 0.016265
+      - 0.013995
+      - 0.0490895
+      - 0.00848
+      - 0.00771
+      - 0.00737
+      - 0.025615
+      - 0.001725
+      - 0.002265
+      - 0.017875
+      - 0.016005
+      - 0.02533
+      - 0.025295
+      - 0.014375
+      - 0.00109
+      - 0.02732
+      - 0.02658
+      - 0.037355
+      - 0.011575
+      - 0.00451
+      - 0.005865
+      - 0.003255
+      - 0.005965
+      - 0.00077
+      - 0.00621
+      - 0.00222
+      - 0.0062
+      - 0
+      - 0.00538
+      - 0.00122
+      - 0.027875
+      - 0.007465
+      - 0.016265
+      - 0.013995
+      - 0.0490895
+      - 0.00848
+      - 0.00771
+      - 0.00737
+      - 0.025615
+      - 0.001725
+      - 0.002265
+      - 0.017875
+      - 0.016005
+      - 0.02533
+      - 0.025295
+      - 0.014375
+      - 0.00109
+      - 0.02732
+      - 0.02658
+      - 0.037355
+      - 0.011575
+      - 0.00451
+      - 0.005865
+      - 0.003255
+      - 0.005965
+      - 0.00077
+      - 0.00771
+      - 0.002379
+      - 0.00766
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0

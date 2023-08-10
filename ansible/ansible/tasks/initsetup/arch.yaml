@@ -1,0 +1,134 @@
+- name: Include create user task
+  import_tasks: ansible/tasks/initsetup/installAurHelper.yaml
+
+- name: Parallel package downloads to 3
+  ansible.builtin.lineinfile:
+    backup: yes
+    state: present
+    path: "/etc/pacman.conf"
+    insertafter: '^\[options\]$'
+    regex: "^ParallelDownloads"
+    line: "ParallelDownloads = 3"
+
+#- name: remove conflict
+#  community.general.pacman:
+#    name: pipewire-media-session
+#    state: absent
+#    force: yes
+
+
+
+- name: pacman -Syu
+  community.general.pacman:
+    update_cache: yes
+    upgrade: yes
+    extra_args: --noconfirm --ignoregroup=ansible --ignore=ansible --overwrite '*'
+  tags: [always, syu]
+  retries: 3
+  delay: 30
+
+- name: Include task list in play
+  include_tasks: ansible/tasks/tools/main.yml
+
+- name: Install Official packages
+  community.general.pacman:
+    state: present
+    extra_args: --noconfirm --overwrite '*'
+    update_cache: yes
+    name: "{{ pacman }}"
+
+- name: Install community packages
+  aur:
+    use: "{{ aur_helper }}"
+    name: "{{ aur }}"
+    update_cache: yes
+  become: no
+  become_user: aur_builder
+
+- name: Enable docker without sudo
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Adding current user to group docker
+  user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: yes
+
+- name: Make sure a service unit is running
+  ansible.builtin.systemd:
+    enabled: yes
+    state: started
+    name: docker
+
+- name: Reset ssh connection to allow user changes to affect ansible user
+  ansible.builtin.meta: reset_connection
+
+# - name: Check grub exist
+#   stat:
+#     path: /etc/default/grub
+#   register: stat_grub_exist
+
+# - name: Reduce GRUB timeout
+#   ansible.builtin.lineinfile:
+#     backup: yes
+#     state: present
+#     path: /etc/default/grub
+#     regexp: "^GRUB_TIMEOUT="
+#     line: "GRUB_TIMEOUT=0"
+#   when: stat_grub_exist.stat.exists
+#   notify: Update grub
+
+- name: Reduce swappiness
+  ansible.builtin.copy:
+    content: "vm.swappiness=10"
+    dest: /etc/sysctl.d/100-manjaro-custom.conf
+
+- name: Check gdm exist
+  stat:
+    path: /etc/gdm/custom.conf
+  register: stat_gdm_exist
+
+- name: Disable wayland
+  ansible.builtin.lineinfile:
+    backup: yes
+    state: present
+    path: /etc/gdm/custom.conf
+    regexp: "^WaylandEnable=true"
+    line: "WaylandEnable=false"
+  when: stat_gdm_exist.stat.exists
+
+# - name: Printer
+#   ansible.builtin.systemd:
+#     enabled: yes
+#     state: started
+#     name: org.cups.cupsd
+
+# - name: Check if .zshrc exists
+#   stat:
+#     path: ~/.zshrc
+#   register: stat_rc_result
+
+# - name: Check if .oh-my-zsh exists
+#   stat:
+#     path: ~/.oh-my-zsh
+#   register: stat_oh_my_zsh_result
+
+# - name: Cloning oh-my-zsh
+#   git:
+#     repo: https://github.com/robbyrussell/oh-my-zsh
+#     dest: ~/.oh-my-zsh
+#     depth: 1
+#   when: not stat_oh_my_zsh_result.stat.exists
+
+# - name: Creating new ~/.zshrc
+#   copy:
+#     src: ~/.oh-my-zsh/templates/zshrc.zsh-template
+#     dest: ~/.zshrc
+#   when: not stat_rc_result.stat.exists
+
+# - name: Set login shell of user {{ ansible_user_id }} to `/bin/zsh` with `usermod`
+#   ansible.builtin.command: usermod --shell /bin/zsh {{ ansible_user_id }}
+#   become: true
+#   changed_when: false
